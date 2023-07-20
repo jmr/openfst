@@ -1,4 +1,4 @@
-AC_INIT([OpenFst],[1.8.2],[help@www.openfst.org])
+AC_INIT([OpenFst],[1.8.2.post1],[help@www.openfst.org])
 AM_INIT_AUTOMAKE([foreign nostdinc -Wall -Werror subdir-objects])
 AM_PROG_AR
 
@@ -105,8 +105,10 @@ AC_ARG_ENABLE([python],
               [enable_python=no])
 AM_CONDITIONAL([HAVE_PYTHON], [test "x$enable_python" != xno])
 if test "x$enable_python" != xno; then
-  AM_PATH_PYTHON(3.6)
-  AX_PYTHON_DEVEL([>= '3.6'])
+  # TODO(kbg): This is overly strict; 3.6 should work too. But the macro is
+  # buggy when comparing two-digit and single-digit minor version numbers.
+  AM_PATH_PYTHON(3.10)
+  AX_PYTHON_DEVEL([>= '3.10'])
 fi
 
 AC_ARG_ENABLE([special],

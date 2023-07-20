@@ -1,18 +1,19 @@
 #cython: c_string_encoding=utf8, c_string_type=unicode, language_level=3, nonecheck=True
-# Copyright 2005-2020 Google LLC
+# Copyright 2016-2020 Google LLC
 #
-# Licensed under the Apache License, Version 2.0 (the 'License');
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an 'AS IS' BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 # See www.openfst.org for extensive documentation on this weighted
 # finite-state transducer library.
 
@@ -96,7 +97,7 @@ from cios cimport ofstream
 from cmemory cimport WrapUnique
 
 # Python imports.
-from absl import logging
+import logging
 import enum
 import numbers
 import os
@@ -107,7 +108,7 @@ import sys
 ## Custom types.
 
 # These defintions only ensure that these are defined to avoid attribute errors,
-# but don't actually contain the type definitions. Those are in pywrapfst.pyi.
+# but don't actually contain the type definitions. Those are in _pywrapfst.pyi.
 import typing
 
 ArcMapType = """typing.Literal["identity", "input_epsilon", "invert",
@@ -4844,3 +4845,4 @@ cdef class FarWriter:
 
 # Masks fst_error_fatal in-module.
 fst.FST_FLAGS_fst_error_fatal = False
+

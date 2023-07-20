@@ -51,6 +51,13 @@ INSTALLATION:
   on OS X is called update_dyld_shared_cache. Both of these require superuser
   privileges (and so should be executed with sudo).
 
+  The Python wrapper is ordinarily installed to the local `site-packages`. This
+  may cause issues on Debian-based Linux distributions as these use a 
+  non-standard `dist-packages` directory and do not include `site-packages` in 
+  their Python module path. To correct this, move, copy, or link `pywrapfst.so`
+  into `dist-packages`, or modify your module load path (e.g., environmental
+  variable `$PYTHONPATH`) to include the local `site-packages` directory.
+
 USAGE:
   Assuming you've installed under the default /usr/local, the FST binaries are
   found on /usr/local/bin.

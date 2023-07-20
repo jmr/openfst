@@ -54,6 +54,9 @@ DECLARE_bool(fst_error_fatal);
   LOG(LEVEL(FST_FLAGS_fst_error_fatal ? base_logging::FATAL \
                                                  : base_logging::ERROR))
 
+#undef FST
+
+
 namespace fst {
 
 // Utility for type I/O.

@@ -1,10 +1,6 @@
-
-
 <p align="left">
-    <a href="#"><img src="logo.svg"></img></a>
+    <a href="#"><img src="logo.svg"></a>
 </p>
-
-<!-- ![openfst](logo.svg) -->
 
 # OpenFst Library
 

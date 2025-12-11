@@ -1,0 +1,116 @@
+// Copyright 2025 The OpenFst Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// See www.openfst.org for extensive documentation on this weighted
+// finite-state transducer library.
+//
+// Encodes FAR labels and/or weights.
+
+#include <cstring>
+#include <memory>
+#include <string>
+
+#include "absl/flags/parse.h"
+#include "absl/flags/usage.h"
+#include "absl/flags/declare.h"
+#include "absl/flags/flag.h"
+#include "absl/log/flags.h"
+#include "absl/log/log.h"
+#include "openfst/extensions/far/far-class.h"
+#include "openfst/extensions/far/far.h"
+#include "openfst/extensions/far/farscript.h"
+#include "openfst/extensions/far/getters.h"
+#include "openfst/lib/util.h"
+#include "openfst/script/encodemapper-class.h"
+#include "openfst/script/getters.h"
+
+ABSL_DECLARE_FLAG(bool, decode);
+ABSL_DECLARE_FLAG(bool, encode_labels);
+ABSL_DECLARE_FLAG(bool, encode_weights);
+ABSL_DECLARE_FLAG(bool, encode_reuse);
+ABSL_DECLARE_FLAG(std::string, far_type);
+
+int farencode_main(int argc, char **argv) {
+  namespace s = fst::script;
+  using fst::script::EncodeMapperClass;
+  using fst::script::FarReaderClass;
+  using fst::script::FarWriterClass;
+
+  std::string usage = "Encodes FST labels and/or weights in an FST archive.";
+  usage += "\n\n  Usage: ";
+  usage += argv[0];
+  usage += " [in.far mapper [out.far]]\n";
+
+  absl::SetProgramUsageMessage(usage.c_str());
+  const auto rest_args = absl::ParseCommandLine(argc, argv);
+  
+  if (rest_args.size() < 3 || rest_args.size() >  4) {
+    LOG(INFO) << absl::ProgramUsageMessage();
+    return 1;
+  }
+
+  const std::string in_name = (strcmp(rest_args[1], "-") != 0) ? rest_args[1] : "";
+  const std::string mapper_name = rest_args[2];
+  const std::string out_name =
+      argc > 3 && strcmp(rest_args[3], "-") != 0 ? rest_args[3] : "";
+
+  std::unique_ptr<FarReaderClass> reader(FarReaderClass::Open(in_name));
+  if (!reader) return 1;
+
+  fst::FarType far_type;
+  if (!s::GetFarType(absl::GetFlag(FLAGS_far_type), &far_type)) {
+    LOG(ERROR) << "Unknown --far_type " << absl::GetFlag(FLAGS_far_type);
+    return 1;
+  }
+
+  // This uses a different meaning of far_type; since DEFAULT means "same as
+  // input", we must determine the input FarType.
+  if (far_type == fst::FarType::DEFAULT) far_type = reader->Type();
+
+  const auto arc_type = reader->ArcType();
+  if (arc_type.empty()) return 1;
+
+  std::unique_ptr<FarWriterClass> writer(
+      FarWriterClass::Create(out_name, arc_type, far_type));
+  if (!writer) return 1;
+
+  if (absl::GetFlag(FLAGS_decode)) {
+    std::unique_ptr<EncodeMapperClass> mapper(
+        EncodeMapperClass::Read(mapper_name));
+    if (!mapper) return 1;
+    s::Decode(*reader, *writer, *mapper);
+  } else if (absl::GetFlag(FLAGS_encode_reuse)) {
+    std::unique_ptr<EncodeMapperClass> mapper(
+        EncodeMapperClass::Read(mapper_name));
+    if (!mapper) return 1;
+    s::Encode(*reader, *writer, mapper.get());
+  } else {
+    const auto flags = s::GetEncodeFlags(absl::GetFlag(FLAGS_encode_labels),
+                                         absl::GetFlag(FLAGS_encode_weights));
+    EncodeMapperClass mapper(reader->ArcType(), flags);
+    s::Encode(*reader, *writer, &mapper);
+    if (!mapper.Write(mapper_name)) return 1;
+  }
+
+  if (reader->Error()) {
+    FSTERROR() << "Error reading FAR: " << in_name;
+    return 1;
+  }
+  if (writer->Error()) {
+    FSTERROR() << "Error writing FAR: " << out_name;
+    return 1;
+  }
+
+  return 0;
+}

@@ -1,0 +1,98 @@
+// Copyright 2025 The OpenFst Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// See www.openfst.org for extensive documentation on this weighted
+// finite-state transducer library.
+//
+// Returns the shortest path in a (bounded-stack) PDT.
+
+#include <cstdint>
+#include <cstring>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "absl/flags/parse.h"
+#include "absl/flags/usage.h"
+#include "absl/flags/declare.h"
+#include "absl/flags/flag.h"
+#include "absl/log/flags.h"
+#include "absl/log/log.h"
+#include "openfst/extensions/pdt/pdtscript.h"
+#include "openfst/lib/queue.h"
+#include "openfst/lib/util.h"
+#include "openfst/script/fst-class.h"
+
+ABSL_DECLARE_FLAG(bool, keep_parentheses);
+ABSL_DECLARE_FLAG(std::string, queue_type);
+ABSL_DECLARE_FLAG(bool, path_gc);
+ABSL_DECLARE_FLAG(std::string, pdt_parentheses);
+
+int pdtshortestpath_main(int argc, char **argv) {
+  namespace s = fst::script;
+  using fst::QueueType;
+  using fst::ReadLabelPairs;
+  using fst::script::FstClass;
+  using fst::script::VectorFstClass;
+
+  std::string usage = "Shortest path in a (bounded-stack) PDT.\n\n  Usage: ";
+  usage += argv[0];
+  usage += " in.pdt [out.fst]\n";
+
+  absl::SetProgramUsageMessage(usage.c_str());
+  const auto rest_args = absl::ParseCommandLine(argc, argv);
+  
+  if (rest_args.size() > 3) {
+    LOG(INFO) << absl::ProgramUsageMessage();
+    return 1;
+  }
+
+  const std::string in_name =
+      (rest_args.size() > 1 && (strcmp(rest_args[1], "-") != 0)) ? rest_args[1] : "";
+  const std::string out_name =
+      (rest_args.size() > 2 && (strcmp(rest_args[2], "-") != 0)) ? rest_args[2] : "";
+
+  std::unique_ptr<FstClass> ifst(FstClass::Read(in_name));
+  if (!ifst) return 1;
+
+  if (absl::GetFlag(FLAGS_pdt_parentheses).empty()) {
+    LOG(ERROR) << argv[0] << ": No PDT parenthesis label pairs provided";
+    return 1;
+  }
+
+  std::vector<std::pair<int64_t, int64_t>> parens;
+  if (!ReadLabelPairs(absl::GetFlag(FLAGS_pdt_parentheses), &parens)) return 1;
+
+  VectorFstClass ofst(ifst->ArcType());
+
+  QueueType qt;
+  if (absl::GetFlag(FLAGS_queue_type) == "fifo") {
+    qt = fst::FIFO_QUEUE;
+  } else if (absl::GetFlag(FLAGS_queue_type) == "lifo") {
+    qt = fst::LIFO_QUEUE;
+  } else if (absl::GetFlag(FLAGS_queue_type) == "state") {
+    qt = fst::STATE_ORDER_QUEUE;
+  } else {
+    LOG(ERROR) << "Unknown queue type: " << absl::GetFlag(FLAGS_queue_type);
+    return 1;
+  }
+
+  const s::PdtShortestPathOptions opts(
+      qt, absl::GetFlag(FLAGS_keep_parentheses), absl::GetFlag(FLAGS_path_gc));
+
+  s::ShortestPath(*ifst, parens, &ofst, opts);
+
+  return !ofst.Write(out_name);
+}

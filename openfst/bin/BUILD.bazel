@@ -1,0 +1,923 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Description: Programs for finite-state tranducer representations and
+# algorithms to build, combine, search and optimize them.
+# These are only linked with FST and arc types defined in
+# //third_party/openfst/lib.
+
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+# Code to set up LD_LIBRARY PATH for crosstoolv16 (http://b/6560486)
+filegroup(
+    name = "setup",
+    srcs = ["setup.sh"],
+)
+
+cc_library(
+    name = "fstarcsort-main",
+    srcs = ["fstarcsort-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstclosure-main",
+    srcs = ["fstclosure-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstcompile-main",
+    srcs = ["fstcompile-main.cc"],
+    deps = [
+        "//openfst/lib:file-util",
+        "//openfst/lib:symbol-table",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstcompose-main",
+    srcs = ["fstcompose-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstconcat-main",
+    srcs = ["fstconcat-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstconnect-main",
+    srcs = ["fstconnect-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstconvert-main",
+    srcs = ["fstconvert-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstdeterminize-main",
+    srcs = ["fstdeterminize-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstdifference-main",
+    srcs = ["fstdifference-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstdisambiguate-main",
+    srcs = ["fstdisambiguate-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstdraw-main",
+    srcs = ["fstdraw-main.cc"],
+    deps = [
+        "//openfst/lib:file-util",
+        "//openfst/lib:symbol-table",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstencode-main",
+    srcs = ["fstencode-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstepsnormalize-main",
+    srcs = ["fstepsnormalize-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstequal-main",
+    srcs = ["fstequal-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstequivalent-main",
+    srcs = ["fstequivalent-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstinfo-main",
+    srcs = ["fstinfo-main.cc"],
+    deps = [
+        "//openfst/lib:file-util",
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "//openfst/script:arcfilter-impl",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstintersect-main",
+    srcs = ["fstintersect-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstinvert-main",
+    srcs = ["fstinvert-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstisomorphic-main",
+    srcs = ["fstisomorphic-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstmap-main",
+    srcs = ["fstmap-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstminimize-main",
+    srcs = ["fstminimize-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstprint-main",
+    srcs = ["fstprint-main.cc"],
+    deps = [
+        "//openfst/lib:file-util",
+        "//openfst/lib:symbol-table",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstproject-main",
+    srcs = ["fstproject-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstprune-main",
+    srcs = ["fstprune-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstpush-main",
+    srcs = ["fstpush-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstrandgen-main",
+    srcs = ["fstrandgen-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstrelabel-main",
+    srcs = ["fstrelabel-main.cc"],
+    deps = [
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstreplace-main",
+    srcs = ["fstreplace-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "fstreverse-main",
+    srcs = ["fstreverse-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstreweight-main",
+    srcs = ["fstreweight-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstrmepsilon-main",
+    srcs = ["fstrmepsilon-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstshortestdistance-main",
+    srcs = ["fstshortestdistance-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "//openfst/script:arcfilter-impl",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstshortestpath-main",
+    srcs = ["fstshortestpath-main.cc"],
+    deps = [
+        "//openfst/lib:lib_lite",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstsymbols-main",
+    srcs = ["fstsymbols-main.cc"],
+    deps = [
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstsynchronize-main",
+    srcs = ["fstsynchronize-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fsttopsort-main",
+    srcs = ["fsttopsort-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "fstunion-main",
+    srcs = ["fstunion-main.cc"],
+    deps = [
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_binary(
+    name = "fstarcsort",
+    srcs = ["fstarcsort.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstarcsort-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstclosure",
+    srcs = ["fstclosure.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstclosure-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstcompile",
+    srcs = ["fstcompile.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstcompile-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstcompose",
+    srcs = ["fstcompose.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstcompose-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstconcat",
+    srcs = ["fstconcat.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstconcat-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstconnect",
+    srcs = ["fstconnect.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstconnect-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstconvert",
+    srcs = ["fstconvert.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstconvert-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstdeterminize",
+    srcs = ["fstdeterminize.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstdeterminize-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstdifference",
+    srcs = ["fstdifference.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstdifference-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstdisambiguate",
+    srcs = ["fstdisambiguate.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstdisambiguate-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstdraw",
+    srcs = ["fstdraw.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstdraw-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstencode",
+    srcs = ["fstencode.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstencode-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstepsnormalize",
+    srcs = ["fstepsnormalize.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstepsnormalize-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstequal",
+    srcs = ["fstequal.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstequal-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstequivalent",
+    srcs = ["fstequivalent.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstequivalent-main",
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstinfo",
+    srcs = ["fstinfo.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstinfo-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstintersect",
+    srcs = ["fstintersect.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstintersect-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstinvert",
+    srcs = ["fstinvert.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstinvert-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstisomorphic",
+    srcs = ["fstisomorphic.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstisomorphic-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstmap",
+    srcs = ["fstmap.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstmap-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstminimize",
+    srcs = ["fstminimize.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstminimize-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstprint",
+    srcs = ["fstprint.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstprint-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstproject",
+    srcs = ["fstproject.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstproject-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstprune",
+    srcs = ["fstprune.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstprune-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstpush",
+    srcs = ["fstpush.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstpush-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstrandgen",
+    srcs = ["fstrandgen.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstrandgen-main",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstrelabel",
+    srcs = ["fstrelabel.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstrelabel-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstreplace",
+    srcs = ["fstreplace.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstreplace-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstreverse",
+    srcs = ["fstreverse.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstreverse-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstreweight",
+    srcs = ["fstreweight.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstreweight-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstrmepsilon",
+    srcs = ["fstrmepsilon.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstrmepsilon-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstshortestdistance",
+    srcs = ["fstshortestdistance.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstshortestdistance-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstshortestpath",
+    srcs = ["fstshortestpath.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstshortestpath-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstsymbols",
+    srcs = ["fstsymbols.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstsymbols-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstsynchronize",
+    srcs = ["fstsynchronize.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstsynchronize-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fsttopsort",
+    srcs = ["fsttopsort.cc"],
+    linkstatic = True,
+    deps = [
+        ":fsttopsort-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "fstunion",
+    srcs = ["fstunion.cc"],
+    linkstatic = True,
+    deps = [
+        ":fstunion-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)

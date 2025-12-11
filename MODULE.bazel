@@ -1,0 +1,74 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Module file for Bazel build system for OpenFst.
+#
+# See https://registry.bazel.build/ for central Bazel package registry.
+
+module(
+    name = "openfst",
+)
+
+# Bazel core modules providing rules.
+bazel_dep(
+    name = "bazel_skylib",
+    version = "1.8.2",
+)
+bazel_dep(
+    name = "rules_cc",
+    version = "0.2.14"
+)
+bazel_dep(
+    name = "rules_python",
+    version = "1.7.0"
+)
+bazel_dep(
+    name = "rules_shell",
+    version = "0.6.1"
+)
+bazel_dep(
+    name = "platforms",
+    version = "1.0.0",
+)
+bazel_dep(
+    name = "rules_license",
+    version = "1.0.0"
+)
+
+# Package dependencies.
+bazel_dep(
+    name = "googletest",
+    version = "1.17.0.bcr.2",
+    repo_name = "com_google_googletest"
+)
+bazel_dep(
+    name = "google_benchmark",
+    version = "1.9.4",
+    repo_name = "com_google_benchmark",
+)
+bazel_dep(
+    name = "abseil-cpp",
+    version = "20250814.1",
+    repo_name = "com_google_absl"
+)
+bazel_dep(
+    name = "abseil-py",
+    version = "2.1.0",
+    repo_name = "com_google_absl_py"
+)
+bazel_dep(
+    # For `openfst/test:string_test`.
+    name = "icu",
+    version = "76.1.bcr.3"
+)

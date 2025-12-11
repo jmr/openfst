@@ -1,0 +1,174 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Description:
+#   Libraries for registering uncommon CompactFst types.
+
+load("@//openfst/lib:build_rules.bzl", "fst_cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+#
+# Libraries
+#
+
+fst_cc_library(
+    name = "compact8_acceptor-fst",
+    srcs = ["compact8_acceptor-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact8_string-fst",
+    srcs = ["compact8_string-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact8_unweighted-fst",
+    srcs = ["compact8_unweighted-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact8_unweighted_acceptor-fst",
+    srcs = ["compact8_unweighted_acceptor-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact8_weighted_string-fst",
+    srcs = ["compact8_weighted_string-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact16_acceptor-fst",
+    srcs = ["compact16_acceptor-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact16_string-fst",
+    srcs = ["compact16_string-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact16_unweighted-fst",
+    srcs = ["compact16_unweighted-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact16_unweighted_acceptor-fst",
+    srcs = ["compact16_unweighted_acceptor-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact16_weighted_string-fst",
+    srcs = ["compact16_weighted_string-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact64_acceptor-fst",
+    srcs = ["compact64_acceptor-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact64_string-fst",
+    srcs = ["compact64_string-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact64_unweighted-fst",
+    srcs = ["compact64_unweighted-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact64_unweighted_acceptor-fst",
+    srcs = ["compact64_unweighted_acceptor-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "compact64_weighted_string-fst",
+    srcs = ["compact64_weighted_string-fst.cc"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:register",
+    ],
+    alwayslink = 1,
+)

@@ -1,0 +1,161 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+# Libraries.
+
+cc_library(
+    name = "phi-fst",
+    srcs = ["phi-fst.cc"],
+    hdrs = ["phi-fst.h"],
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:register",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "rho-fst",
+    srcs = ["rho-fst.cc"],
+    hdrs = ["rho-fst.h"],
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:register",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "sigma-fst",
+    srcs = ["sigma-fst.cc"],
+    hdrs = ["sigma-fst.h"],
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:register",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+    ],
+    alwayslink = 1,
+)
+
+# Binaries.
+
+cc_binary(
+    name = "fstspecial",
+    srcs = ["fstspecial.cc"],
+    linkstatic = True,
+    deps = [
+        ":phi-fst",
+        ":rho-fst",
+        ":sigma-fst",
+        "//openfst/bin:fstconvert-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+# Tests.
+
+filegroup(
+    name = "phi-testdata",
+    data = [
+        "testdata/a.fst",
+        "testdata/b1.fst",
+        "testdata/b2.fst",
+        "testdata/c1.fst",
+        "testdata/c2.fst",
+        "testdata/c3.fst",
+    ],
+)
+
+cc_test(
+    name = "phi-fst_test",
+    srcs = ["phi-fst_test.cc"],
+    data = [":phi-testdata"],
+    linkstatic = True,
+    deps = [
+        ":phi-fst",
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+filegroup(
+    name = "rho-testdata",
+    data = [
+        "testdata/d1.fst",
+        "testdata/d2.fst",
+        "testdata/e.fst",
+        "testdata/f1.fst",
+        "testdata/f2.fst",
+    ],
+)
+
+cc_test(
+    name = "rho-fst_test",
+    srcs = ["rho-fst_test.cc"],
+    data = [":rho-testdata"],
+    linkstatic = True,
+    deps = [
+        ":rho-fst",
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+filegroup(
+    name = "sigma-testdata",
+    data = [
+        "testdata/g.fst",
+        "testdata/h.fst",
+        "testdata/i1.fst",
+        "testdata/i2.fst",
+    ],
+)
+
+cc_test(
+    name = "sigma-fst_test",
+    srcs = ["sigma-fst_test.cc"],
+    data = [":sigma-testdata"],
+    linkstatic = True,
+    deps = [
+        ":sigma-fst",
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

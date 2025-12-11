@@ -1,0 +1,306 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "testdata/c1.fst",
+    "testdata/c2.fst",
+    "testdata/c3.fst",
+    "testdata/e1.fst",
+    "testdata/e2.fst",
+    "testdata/e3.fst",
+    "testdata/eparen.triples",
+    "testdata/v1.fst",
+    "testdata/v2.fst",
+    "testdata/vparen.triples",
+    "testdata/vparen.triples.out",
+])
+
+# Description: Extensions to finite-state transducer library for
+# pushdown transducer representations and algorithms
+
+# Libraries.
+
+cc_library(
+    name = "script",
+    srcs = ["mpdtscript.cc"],
+    hdrs = ["mpdtscript.h"],
+    deps = [
+        ":compose",
+        ":expand",
+        ":info",
+        ":reverse",
+        "//openfst/extensions/pdt:script",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "//openfst/script",
+    ],
+)
+
+cc_library(
+    name = "compose",
+    hdrs = ["compose.h"],
+    deps = [
+        ":mpdt",
+        "//openfst/extensions/pdt:compose",
+        "//openfst/lib",
+    ],
+)
+
+cc_library(
+    name = "mpdt",
+    hdrs = ["mpdt.h"],
+    deps = [
+        "//openfst/extensions/pdt",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/types:optional",
+    ],
+)
+
+cc_library(
+    name = "mpdtlib",
+    hdrs = ["mpdtlib.h"],
+    deps = [
+        ":compose",
+        ":expand",
+        ":mpdt",
+        ":reverse",
+    ],
+)
+
+cc_library(
+    name = "read_write_utils",
+    hdrs = ["read_write_utils.h"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:file-util",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "reverse",
+    hdrs = ["reverse.h"],
+    deps = ["//openfst/lib"],
+)
+
+cc_library(
+    name = "expand",
+    hdrs = ["expand.h"],
+    deps = [
+        ":mpdt",
+        "//openfst/extensions/pdt",
+        "//openfst/extensions/pdt:paren",
+        "//openfst/lib",
+    ],
+)
+
+cc_library(
+    name = "info",
+    hdrs = ["info.h"],
+    deps = [
+        ":mpdt",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/container:flat_hash_set",
+    ],
+)
+
+# Binaries.
+
+cc_library(
+    name = "mpdtcompose-main",
+    srcs = ["mpdtcompose-main.cc"],
+    deps = [
+        ":compose",
+        ":read_write_utils",
+        ":script",
+        "//openfst/extensions/pdt:compose",
+        "//openfst/extensions/pdt:script",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "mpdtinfo-main",
+    srcs = ["mpdtinfo-main.cc"],
+    deps = [
+        ":read_write_utils",
+        ":script",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "mpdtexpand-main",
+    srcs = ["mpdtexpand-main.cc"],
+    deps = [
+        ":expand",
+        ":read_write_utils",
+        ":script",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "mpdtreverse-main",
+    srcs = ["mpdtreverse-main.cc"],
+    deps = [
+        ":read_write_utils",
+        ":script",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_binary(
+    name = "mpdtcompose",
+    srcs = ["mpdtcompose.cc"],
+    linkstatic = True,
+    deps = [
+        ":mpdtcompose-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "mpdtexpand",
+    srcs = ["mpdtexpand.cc"],
+    linkstatic = True,
+    deps = [
+        ":mpdtexpand-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "mpdtinfo",
+    srcs = ["mpdtinfo.cc"],
+    linkstatic = True,
+    deps = [
+        ":mpdtinfo-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "mpdtreverse",
+    srcs = ["mpdtreverse.cc"],
+    linkstatic = True,
+    deps = [
+        ":mpdtreverse-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+# Tests.
+
+cc_test(
+    name = "compose_test",
+    size = "medium",
+    srcs = ["compose_test.cc"],
+    data = [
+        ":testdata/c1.fst",
+        ":testdata/c2.fst",
+        ":testdata/c3.fst",
+        ":testdata/eparen.triples",
+    ],
+    linkstatic = True,
+    deps = [
+        ":compose",
+        ":read_write_utils",
+        "//openfst/extensions/pdt:compose",
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "expand_test",
+    size = "medium",
+    srcs = ["expand_test.cc"],
+    data = [
+        ":testdata/e1.fst",
+        ":testdata/e2.fst",
+        ":testdata/e3.fst",
+        ":testdata/eparen.triples",
+    ],
+    linkstatic = True,
+    deps = [
+        ":expand",
+        ":read_write_utils",
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "mpdt_test",
+    size = "medium",
+    srcs = ["mpdt_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":mpdt",
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "reverse_test",
+    size = "medium",
+    srcs = ["reverse_test.cc"],
+    data = [
+        ":testdata/v1.fst",
+        ":testdata/v2.fst",
+        ":testdata/vparen.triples",
+    ],
+    linkstatic = True,
+    deps = [
+        ":read_write_utils",
+        ":reverse",
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

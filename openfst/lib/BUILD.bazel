@@ -1,0 +1,372 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Description: Library for finite-state tranducer representations and
+# algorithms to build, combine, search and optimize them.
+
+load("@//openfst/lib:build_rules.bzl", "fst_cc_library")
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+fst_cc_library(
+    name = "symbol-table",
+    srcs = [
+        "symbol-table.cc",
+    ],
+    hdrs = [
+        "compat-util.h",
+        "symbol-table.h",
+    ],
+    deps = [
+        ":file-stream-status",
+        ":file-util",
+        ":util",
+        ":windows_defs",
+        "//openfst/compat",
+        "//openfst/compat:compat_memory",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/base:nullability",
+        "@com_google_absl//absl/container:btree",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/hash",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/synchronization",
+    ],
+)
+
+# Forward-declarations and typedefs only.
+fst_cc_library(
+    name = "fst-decl",
+    hdrs = ["fst-decl.h"],
+    deps = [":windows_defs"],
+)
+
+PUBLIC_HEADERS = [
+    "fstlib.h",
+    # fstlib.h is a convenience header which includes all of the
+    "accumulator.h",
+    "add-on.h",
+    "arc.h",
+    "arc-arena.h",
+    "arc-map.h",
+    "arcfilter.h",
+    "arcsort.h",
+    "bi-table.h",
+    "cache.h",
+    "cc-visitors.h",
+    "closure.h",
+    "compact-fst.h",
+    "complement.h",
+    "compose-filter.h",
+    "compose.h",
+    "concat.h",
+    "connect.h",
+    "const-fst.h",
+    "determinize.h",
+    "dfs-visit.h",
+    "difference.h",
+    "disambiguate.h",
+    "edit-fst.h",
+    "encode.h",
+    "epsnormalize.h",
+    "equal.h",
+    "equivalent.h",
+    "error-weight.h",
+    "expanded-fst.h",
+    "expander-cache.h",
+    "expander-fst.h",
+    "expectation-weight.h",
+    "factor-weight.h",
+    "filter-state.h",
+    "fst.h",
+    "heap.h",
+    "icu.h",
+    "impl-to-fst.h",
+    "intersect.h",
+    "invert.h",
+    "isomorphic.h",
+    "label-reachable.h",
+    "lexicographic-weight.h",
+    "lookahead-filter.h",
+    "lookahead-matcher.h",
+    "matcher-fst.h",
+    "matcher.h",
+    "memory.h",
+    "minimize.h",
+    "mutable-fst.h",
+    "pair-weight.h",
+    "partition.h",
+    "port.h",
+    "power-weight-mappers.h",
+    "product-weight.h",
+    "project.h",
+    "properties.h",
+    "prune.h",
+    "push.h",
+    "queue.h",
+    "randequivalent.h",
+    "randgen.h",
+    "rational.h",
+    "relabel.h",
+    "replace.h",
+    "replace-util.h",
+    "reverse.h",
+    "reweight.h",
+    "rmepsilon.h",
+    "rmfinalepsilon.h",
+    "set-weight.h",
+    "shortest-distance.h",
+    "shortest-path.h",
+    "signed-log-weight.h",
+    "state-map.h",
+    "state-reachable.h",
+    "state-table.h",
+    "statesort.h",
+    "string.h",
+    "string-weight.h",
+    "symbol-table-ops.h",
+    "synchronize.h",
+    "test-properties.h",
+    "topsort.h",
+    "union.h",
+    "union-weight.h",
+    "vector-fst.h",
+    "verify.h",
+    "visit.h",
+    "weight.h",
+]
+
+# This version does not have export-dynamic flag set and should not be used to
+# load dynamic-shared object FST extensions. Please see "lib_export_dynamic"
+# rule below for binaries that need DSO loading.
+# lib_lite does not include type registration for default Fst types.
+# Use target "lib" to include default type registration.
+fst_cc_library(
+    name = "lib_lite",
+    srcs = [
+        "encode.cc",
+        "fst.cc",
+        "properties.cc",
+        "symbol-table-ops.cc",
+    ],
+    hdrs = PUBLIC_HEADERS,
+    deps = [
+        ":file-util",
+        ":fst-decl",
+        ":interval-set",
+        ":register",
+        ":symbol-table",
+        ":union-find",
+        ":util",
+        ":weight",
+        ":windows_defs",
+        "//openfst/compat:compat_memory",
+        "@com_google_absl//absl/base",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/base:dynamic_annotations",
+        "@com_google_absl//absl/base:nullability",
+        "@com_google_absl//absl/container:fixed_array",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/container:node_hash_set",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/hash",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+fst_cc_library(
+    name = "lib",
+    hdrs = PUBLIC_HEADERS,
+    deps = [
+        ":file-util",
+        ":fst-decl",
+        ":fst-types",
+        ":interval-set",
+        ":lib_lite",
+        ":register",
+        ":symbol-table",
+        ":union-find",
+        ":util",
+        ":weight",
+        ":windows_defs",
+        "//openfst/compat",
+        "//openfst/compat:compat_memory",
+        "@com_google_absl//absl/base",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/base:dynamic_annotations",
+        "@com_google_absl//absl/base:nullability",
+        "@com_google_absl//absl/container:fixed_array",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/container:node_hash_set",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/hash",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+fst_cc_library(
+    name = "lib_export_dynamic",
+    # Needed for loading definitions from shared objects.
+    linkopts = ["-Wl,--export-dynamic"],
+    deps = [":lib"],
+)
+
+fst_cc_library(
+    name = "fst-types",
+    srcs = ["fst-types.cc"],
+    deps = [
+        ":lib_lite",
+        ":register",
+    ],
+    alwayslink = 1,
+)
+
+fst_cc_library(
+    name = "weight",
+    srcs = ["weight.cc"],
+    hdrs = [
+        "error-weight.h",
+        "expectation-weight.h",
+        "float-weight.h",
+        "lexicographic-weight.h",
+        "pair-weight.h",
+        "power-weight.h",
+        "product-weight.h",
+        "set-weight.h",
+        "signed-log-weight.h",
+        "sparse-power-weight.h",
+        "sparse-tuple-weight.h",
+        "string-weight.h",
+        "tuple-weight.h",
+        "union-weight.h",
+        "weight.h",
+    ],
+    deps = [
+        ":util",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+fst_cc_library(
+    name = "interval-set",
+    hdrs = [
+        "interval-set.h",
+    ],
+    deps = [":util"],
+)
+
+fst_cc_library(
+    name = "register",
+    hdrs = [
+        "generic-register.h",
+        "register.h",
+    ],
+    deps = [
+        ":util",
+        "//openfst/compat:flags_log",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/synchronization",
+    ],
+)
+
+fst_cc_library(
+    name = "string",
+    hdrs = [
+        "icu.h",
+        "string.h",
+    ],
+    deps = [
+        ":lib_lite",
+        ":symbol-table",
+        ":util",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+fst_cc_library(
+    name = "union-find",
+    hdrs = [
+        "union-find.h",
+    ],
+)
+
+fst_cc_library(
+    name = "file-stream-status",
+    hdrs = ["file-stream-status.h"],
+    deps = [
+        ":file-util",
+        "@com_google_absl//absl/status",
+    ],
+)
+
+fst_cc_library(
+    name = "file-util",
+    hdrs = [
+        "file-util.h",
+    ],
+    defines = ["NO_GOOGLE"],
+)
+
+fst_cc_library(
+    name = "util",
+    srcs = [
+        "mapped-file.cc",
+        "util.cc",
+    ],
+    hdrs = [
+        "mapped-file.h",
+        "util.h",
+    ],
+    deps = [
+        ":file-util",
+        "@com_google_absl//absl/base:log_severity",
+        "@com_google_absl//absl/base:nullability",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "windows_defs",
+    textual_hdrs = ["windows_defs.inc"],
+)
+
+bzl_library(
+    name = "build_rules_bzl",
+    srcs = ["build_rules.bzl"],
+    visibility = ["//visibility:private"],
+)

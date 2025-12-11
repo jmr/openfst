@@ -1,0 +1,219 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@//openfst/lib:build_rules.bzl", "fst_cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+fst_cc_library(
+    name = "weight-class",
+    srcs = ["weight-class.cc"],
+    hdrs = ["weight-class.h"],
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:register",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+fst_cc_library(
+    name = "script",
+    srcs = [
+        "arciterator-class.cc",
+        "arcsort.cc",
+        "closure.cc",
+        "compile.cc",
+        "compose.cc",
+        "concat.cc",
+        "connect.cc",
+        "convert.cc",
+        "decode.cc",
+        "determinize.cc",
+        "difference.cc",
+        "disambiguate.cc",
+        "draw.cc",
+        "encode.cc",
+        "encodemapper-class.cc",
+        "epsnormalize.cc",
+        "equal.cc",
+        "equivalent.cc",
+        "fst-class.cc",
+        "getters.cc",
+        "info.cc",
+        "intersect.cc",
+        "invert.cc",
+        "isomorphic.cc",
+        "map.cc",
+        "minimize.cc",
+        "print.cc",
+        "project.cc",
+        "prune.cc",
+        "push.cc",
+        "randequivalent.cc",
+        "randgen.cc",
+        "relabel.cc",
+        "replace.cc",
+        "reverse.cc",
+        "reweight.cc",
+        "rmepsilon.cc",
+        "shortest-distance.cc",
+        "shortest-path.cc",
+        "stateiterator-class.cc",
+        "synchronize.cc",
+        "text-io.cc",
+        "topsort.cc",
+        "union.cc",
+        "verify.cc",
+        "weight-class.cc",
+    ],
+    hdrs = [
+        "arc-class.h",
+        "arciterator-class.h",
+        "arcsort.h",
+        "arg-packs.h",
+        "closure.h",
+        "compile.h",
+        "compile-impl.h",
+        "compose.h",
+        "concat.h",
+        "connect.h",
+        "convert.h",
+        "decode.h",
+        "determinize.h",
+        "difference.h",
+        "disambiguate.h",
+        "draw.h",
+        "draw-impl.h",
+        "encode.h",
+        "encodemapper-class.h",
+        "epsnormalize.h",
+        "equal.h",
+        "equivalent.h",
+        "fst-class.h",
+        "getters.h",
+        "info.h",
+        "info-impl.h",
+        "intersect.h",
+        "invert.h",
+        "isomorphic.h",
+        "map.h",
+        "minimize.h",
+        "print.h",
+        "print-impl.h",
+        "project.h",
+        "prune.h",
+        "push.h",
+        "randequivalent.h",
+        "randgen.h",
+        "relabel.h",
+        "replace.h",
+        "reverse.h",
+        "reweight.h",
+        "rmepsilon.h",
+        "script-impl.h",
+        "shortest-distance.h",
+        "shortest-path.h",
+        "stateiterator-class.h",
+        "synchronize.h",
+        "text-io.h",
+        "topsort.h",
+        "union.h",
+        "verify.h",
+        "weight-class.h",
+    ],
+    deps = [
+        ":arcfilter-impl",
+        ":arg-packs",
+        ":compile-impl",
+        ":info-impl",
+        ":print-impl",
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:file-util",
+        "//openfst/lib:register",
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/base",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/base:nullability",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+fst_cc_library(
+    name = "print-impl",
+    hdrs = ["print-impl.h"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+fst_cc_library(
+    name = "compile-impl",
+    hdrs = ["compile-impl.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+fst_cc_library(
+    name = "fstscript",
+    hdrs = ["fstscript.h"],
+    deps = [
+        ":script",
+    ],
+)
+
+fst_cc_library(
+    name = "info-impl",
+    srcs = ["info-impl.cc"],
+    hdrs = ["info-impl.h"],
+    deps = [
+        ":arcfilter-impl",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+fst_cc_library(
+    name = "arcfilter-impl",
+    hdrs = ["arcfilter-impl.h"],
+)
+
+fst_cc_library(
+    name = "arg-packs",
+    hdrs = ["arg-packs.h"],
+    visibility = ["//visibility:private"],
+)

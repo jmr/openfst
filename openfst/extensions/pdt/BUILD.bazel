@@ -1,0 +1,483 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "testdata/c1.fst",
+    "testdata/c2.fst",
+    "testdata/c3.fst",
+    "testdata/cparen.pairs",
+    "testdata/e1.fst",
+    "testdata/e2.fst",
+    "testdata/e3.fst",
+    "testdata/eparen.pairs",
+    "testdata/r1.fst",
+    "testdata/r2.fst",
+    "testdata/r3.fst",
+    "testdata/r4.fst",
+    "testdata/r5.fst",
+    "testdata/rparen.pairs",
+    "testdata/sp1.fst",
+    "testdata/sp2.fst",
+    "testdata/spparen.pairs",
+    "testdata/v1.fst",
+    "testdata/v2.fst",
+    "testdata/vparen.pairs",
+])
+
+# Libraries.
+
+cc_library(
+    name = "collection",
+    hdrs = ["collection.h"],
+    deps = ["//openfst/lib"],
+)
+
+cc_library(
+    name = "script",
+    srcs = [
+        "getters.cc",
+        "pdtscript.cc",
+    ],
+    hdrs = [
+        "getters.h",
+        "pdtscript.h",
+    ],
+    deps = [
+        ":compose",
+        ":expand",
+        ":info",
+        ":replace",
+        ":reverse",
+        ":shortest-path",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "//openfst/script",
+        "//openfst/script:fstscript",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "paren",
+    hdrs = ["paren.h"],
+    deps = [
+        ":collection",
+        ":pdt",
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/memory",
+    ],
+)
+
+cc_library(
+    name = "pdt",
+    hdrs = ["pdt.h"],
+    deps = [
+        "//openfst/lib",
+        "@com_google_absl//absl/container:flat_hash_map",
+    ],
+)
+
+cc_library(
+    name = "compose",
+    hdrs = ["compose.h"],
+    deps = [
+        ":pdt",
+        "//openfst/lib",
+        "//openfst/lib:util",
+    ],
+)
+
+cc_library(
+    name = "shortest-path",
+    hdrs = ["shortest-path.h"],
+    deps = [
+        ":paren",
+        ":pdt",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/log",
+    ],
+)
+
+cc_library(
+    name = "replace",
+    hdrs = ["replace.h"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+cc_library(
+    name = "reverse",
+    hdrs = ["reverse.h"],
+    deps = ["//openfst/lib"],
+)
+
+cc_library(
+    name = "expand",
+    hdrs = ["expand.h"],
+    deps = [
+        ":paren",
+        ":pdt",
+        ":reverse",
+        ":shortest-path",
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+cc_library(
+    name = "info",
+    hdrs = ["info.h"],
+    deps = [
+        ":pdt",
+        "//openfst/lib",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+cc_library(
+    name = "pdtlib",
+    hdrs = ["pdtlib.h"],
+    deps = [
+        ":compose",
+        ":expand",
+        ":pdt",
+        ":replace",
+        ":reverse",
+        ":shortest-path",
+    ],
+)
+
+# Binaries.
+
+cc_library(
+    name = "pdtcompose-main",
+    srcs = ["pdtcompose-main.cc"],
+    deps = [
+        ":compose",
+        ":script",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "pdtexpand-main",
+    srcs = ["pdtexpand-main.cc"],
+    deps = [
+        ":script",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "//openfst/script:weight-class",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "pdtinfo-main",
+    srcs = ["pdtinfo-main.cc"],
+    deps = [
+        ":script",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "pdtreplace-main",
+    srcs = ["pdtreplace-main.cc"],
+    deps = [
+        ":replace",
+        ":script",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "pdtreverse-main",
+    srcs = ["pdtreverse-main.cc"],
+    deps = [
+        ":script",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_library(
+    name = "pdtshortestpath-main",
+    srcs = ["pdtshortestpath-main.cc"],
+    deps = [
+        ":script",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_binary(
+    name = "pdtcompose",
+    srcs = ["pdtcompose.cc"],
+    linkstatic = True,
+    deps = [
+        ":pdtcompose-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "pdtexpand",
+    srcs = ["pdtexpand.cc"],
+    linkstatic = True,
+    deps = [
+        ":pdtexpand-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "pdtinfo",
+    srcs = ["pdtinfo.cc"],
+    linkstatic = True,
+    deps = [
+        ":pdtinfo-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "pdtreplace",
+    srcs = ["pdtreplace.cc"],
+    linkstatic = True,
+    deps = [
+        ":pdtreplace-main",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "pdtreverse",
+    srcs = ["pdtreverse.cc"],
+    linkstatic = True,
+    deps = [
+        ":pdtreverse-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_binary(
+    name = "pdtshortestpath",
+    srcs = ["pdtshortestpath.cc"],
+    linkstatic = True,
+    deps = [
+        ":pdtshortestpath-main",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+# Unit tests.
+
+cc_test(
+    name = "collection_test",
+    size = "small",
+    srcs = ["collection_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":collection",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "compose_test",
+    size = "medium",
+    srcs = ["compose_test.cc"],
+    data = [
+        ":testdata/c1.fst",
+        ":testdata/c2.fst",
+        ":testdata/c3.fst",
+        ":testdata/cparen.pairs",
+    ],
+    linkstatic = True,
+    deps = [
+        ":compose",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "expand_test",
+    size = "medium",
+    srcs = ["expand_test.cc"],
+    data = [
+        ":testdata/e1.fst",
+        ":testdata/e2.fst",
+        ":testdata/e3.fst",
+        ":testdata/e4.fst",
+        ":testdata/eparen.pairs",
+    ],
+    linkstatic = True,
+    deps = [
+        ":expand",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "paren_test",
+    size = "medium",
+    srcs = ["paren_test.cc"],
+    data = [
+        ":testdata/p1.fst",
+        ":testdata/pparen.pairs",
+    ],
+    linkstatic = True,
+    deps = [
+        ":paren",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "replace_test",
+    size = "medium",
+    srcs = ["replace_test.cc"],
+    data = [
+        ":testdata/r1.fst",
+        ":testdata/r10.fst",
+        ":testdata/r11.fst",
+        ":testdata/r12.fst",
+        ":testdata/r2.fst",
+        ":testdata/r3.fst",
+        ":testdata/r4.fst",
+        ":testdata/r5.fst",
+        ":testdata/r6.fst",
+        ":testdata/r7.fst",
+        ":testdata/r8.fst",
+        ":testdata/r9.fst",
+        ":testdata/rparen.pairs",
+    ],
+    linkstatic = True,
+    deps = [
+        ":replace",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "reverse_test",
+    size = "medium",
+    srcs = ["reverse_test.cc"],
+    data = [
+        ":testdata/v1.fst",
+        ":testdata/v2.fst",
+        ":testdata/vparen.pairs",
+    ],
+    linkstatic = True,
+    deps = [
+        ":reverse",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "shortest-path_test",
+    size = "medium",
+    srcs = ["shortest-path_test.cc"],
+    data = [
+        ":testdata/sp1.fst",
+        ":testdata/sp2.fst",
+        ":testdata/sp3.fst",
+        ":testdata/sp4.fst",
+        ":testdata/spparen.pairs",
+    ],
+    linkstatic = True,
+    deps = [
+        ":shortest-path",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

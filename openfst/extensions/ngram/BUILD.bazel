@@ -1,0 +1,188 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Description: Extensions to finite-state transducer library for
+# LOUDS based LM
+
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+
+package(
+    default_visibility = ["//visibility:public"],
+    features = ["android_optimize_for_speed"],
+)
+
+cc_library(
+    name = "nthbit",
+    srcs = ["nthbit.cc"],
+    hdrs = ["nthbit.h"],
+    deps = [
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/log:check",
+    ],
+)
+
+cc_library(
+    name = "bitmap-index",
+    srcs = ["bitmap-index.cc"],
+    hdrs = ["bitmap-index.h"],
+    deps = [
+        ":nthbit",
+        "//openfst/compat",
+        "@com_google_absl//absl/base:config",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/log:check",
+    ],
+)
+
+cc_library(
+    name = "compact-louds-tree-fst",
+    hdrs = ["compact-louds-tree-fst.h"],
+    deps = [
+        ":louds-tree",
+        "//openfst/lib",
+    ],
+)
+
+cc_library(
+    name = "ngram-fst",
+    hdrs = ["ngram-fst.h"],
+    deps = [
+        ":bitmap-index",
+        "//openfst/compat:compat_memory",
+        "//openfst/lib:file-util",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+    ],
+)
+
+cc_library(
+    name = "ngram-fst-file",
+    srcs = ["ngram-fst.cc"],
+    deps = [
+        ":ngram-fst",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:register",
+        "//openfst/lib:weight",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "louds-tree",
+    hdrs = ["louds-tree.h"],
+    deps = [
+        ":bitmap-index",
+        "//openfst/compat:compat_memory",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+cc_test(
+    name = "ngram-fst_test",
+    srcs = ["ngram-fst_test.cc"],
+    data = [":testdata/earnest.mod"],
+    linkstatic = True,
+    deps = [
+        ":ngram-fst",
+        "//openfst/compat:file_path",
+        "//openfst/lib",
+        "//openfst/lib:file-util",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log:die_if_null",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "benchmark_test",
+    srcs = ["benchmark_test.cc"],
+    data = [":testdata/earnest.mod"],
+    linkstatic = True,
+    tags = ["manual"],
+    deps = [
+        ":ngram-fst",
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_benchmark//:benchmark",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "bitmap-index_test",
+    srcs = ["bitmap-index_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":bitmap-index",
+        "//openfst/compat:compat_memory",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/random",
+        "@com_google_absl//absl/strings",
+        "@com_google_benchmark//:benchmark",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "compact-louds-tree-fst_test",
+    srcs = ["compact-louds-tree-fst_test.cc"],
+    data = [":testdata/earnest.mod"],
+    linkstatic = True,
+    deps = [
+        ":compact-louds-tree-fst",
+        ":ngram-fst",
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_benchmark//:benchmark",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "louds-tree_test",
+    srcs = ["louds-tree_test.cc"],
+    data = [":testdata/earnest.mod"],
+    linkstatic = True,
+    deps = [
+        ":louds-tree",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+# Run with --cpu=haswell to test bmi2 version.
+cc_test(
+    name = "nthbit_test",
+    srcs = ["nthbit_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":nthbit",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/log:log_streamer",
+        "@com_google_absl//absl/numeric:bits",
+        "@com_google_absl//absl/random",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

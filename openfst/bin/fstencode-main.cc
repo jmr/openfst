@@ -1,0 +1,85 @@
+// Copyright 2025 The OpenFst Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// See www.openfst.org for extensive documentation on this weighted
+// finite-state transducer library.
+//
+// Encode transducer labels and/or weights.
+
+#include <cstring>
+#include <memory>
+#include <string>
+
+#include "absl/flags/parse.h"
+#include "absl/flags/usage.h"
+#include "absl/flags/declare.h"
+#include "absl/flags/flag.h"
+#include "absl/log/flags.h"
+#include "openfst/script/decode.h"
+#include "openfst/script/encode.h"
+#include "openfst/script/encodemapper-class.h"
+#include "openfst/script/fst-class.h"
+#include "openfst/script/getters.h"
+
+ABSL_DECLARE_FLAG(bool, decode);
+ABSL_DECLARE_FLAG(bool, encode_labels);
+ABSL_DECLARE_FLAG(bool, encode_weights);
+ABSL_DECLARE_FLAG(bool, encode_reuse);
+
+int fstencode_main(int argc, char **argv) {
+  namespace s = fst::script;
+  using fst::script::EncodeMapperClass;
+  using fst::script::MutableFstClass;
+
+  std::string usage = "Encodes transducer labels and/or weights.\n\n  Usage: ";
+  usage += argv[0];
+  usage += " in.fst mapper [out.fst]\n";
+
+  absl::SetProgramUsageMessage(usage.c_str());
+  const auto rest_args = absl::ParseCommandLine(argc, argv);
+  
+  
+  if (rest_args.size() < 3 || rest_args.size() >  4) {
+    LOG(INFO) << absl::ProgramUsageMessage();
+    return 1;
+  }
+
+  const std::string in_name = (strcmp(rest_args[1], "-") != 0) ? rest_args[1] : "";
+  const std::string mapper_name = rest_args[2];
+  const std::string out_name =
+      argc > 3 && strcmp(rest_args[3], "-") != 0 ? rest_args[3] : "";
+
+  std::unique_ptr<MutableFstClass> fst(MutableFstClass::Read(in_name, true));
+  if (!fst) return 1;
+
+  if (absl::GetFlag(FLAGS_decode)) {
+    std::unique_ptr<EncodeMapperClass> mapper(
+        EncodeMapperClass::Read(mapper_name));
+    if (!mapper) return 1;
+    s::Decode(fst.get(), *mapper);
+  } else if (absl::GetFlag(FLAGS_encode_reuse)) {
+    std::unique_ptr<EncodeMapperClass> mapper(
+        EncodeMapperClass::Read(mapper_name));
+    if (!mapper) return 1;
+    s::Encode(fst.get(), mapper.get());
+  } else {
+    const auto flags = s::GetEncodeFlags(absl::GetFlag(FLAGS_encode_labels),
+                                         absl::GetFlag(FLAGS_encode_weights));
+    EncodeMapperClass mapper(fst->ArcType(), flags);
+    s::Encode(fst.get(), &mapper);
+    if (!mapper.Write(mapper_name)) return 1;
+  }
+
+  return !fst->Write(out_name);
+}

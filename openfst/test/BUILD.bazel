@@ -1,0 +1,2353 @@
+# Copyright 2025 The OpenFst Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "testdata/arc-map/m1.fst",
+    "testdata/arc-map/m10.fst",
+    "testdata/arc-map/m11.fst",
+    "testdata/arc-map/m12.fst",
+    "testdata/arc-map/m13.fst",
+    "testdata/arc-map/m14.fst",
+    "testdata/arc-map/m15.fst",
+    "testdata/arc-map/m16.fst",
+    "testdata/arc-map/m4.fst",
+    "testdata/arc-map/m6.fst",
+    "testdata/arc-map/m7.fst",
+    "testdata/arc-map/m8.fst",
+    "testdata/arc-map/m9.fst",
+    "testdata/arcsort/a1.fst",
+    "testdata/arcsort/a2.fst",
+    "testdata/closure/c1.fst",
+    "testdata/closure/c2.fst",
+    "testdata/closure/c3.fst",
+    "testdata/compile/fst.compiled",
+    "testdata/compile/fst.txt",
+    "testdata/compile/isyms.map",
+    "testdata/compile/osyms.map",
+    "testdata/compose/c1.fst",
+    "testdata/compose/c2.fst",
+    "testdata/compose/c3.fst",
+    "testdata/concat/c1.fst",
+    "testdata/concat/c2.fst",
+    "testdata/concat/c3.fst",
+    "testdata/concat/c7.fst",
+    "testdata/connect/c1.fst",
+    "testdata/connect/c2.fst",
+    "testdata/convert/c1.fst",
+    "testdata/determinize/d1.fst",
+    "testdata/determinize/d2.fst",
+    "testdata/determinize/d3.fst",
+    "testdata/determinize/d4.fst",
+    "testdata/determinize/d5.fst",
+    "testdata/difference/d1.fst",
+    "testdata/difference/d2.fst",
+    "testdata/difference/d3.fst",
+    "testdata/disambiguate/d1.fst",
+    "testdata/disambiguate/d2.fst",
+    "testdata/draw/draw-5p.dot",
+    "testdata/draw/draw.fst",
+    "testdata/encode/e1.fst",
+    "testdata/encode/e1_cd.fst",
+    "testdata/encode/e2.fst",
+    "testdata/encode/e2_c.fst",
+    "testdata/epsnormalize/e1.fst",
+    "testdata/epsnormalize/e2.fst",
+    "testdata/epsnormalize/e3.fst",
+    "testdata/epsnormalize/e4.fst",
+    "testdata/equivalent/e1.fst",
+    "testdata/equivalent/e2.fst",
+    "testdata/equivalent/e3.fst",
+    "testdata/equivalent/e4.fst",
+    "testdata/equivalent/e5.fst",
+    "testdata/equivalent/e6.fst",
+    "testdata/fst-file/compact1.fst",
+    "testdata/fst-file/const1.fst",
+    "testdata/fst-file/vector1.fst",
+    "testdata/intersect/i1.fst",
+    "testdata/intersect/i2.fst",
+    "testdata/intersect/i3.fst",
+    "testdata/invert/i1.fst",
+    "testdata/invert/i2.fst",
+    "testdata/minimize/acyclic_min.fst",
+    "testdata/minimize/cyclic_min.fst",
+    "testdata/minimize/m1.fst",
+    "testdata/minimize/m2.fst",
+    "testdata/minimize/m3.fst",
+    "testdata/minimize/m4.fst",
+    "testdata/minimize/m5.fst",
+    "testdata/minimize/m6.fst",
+    "testdata/minimize/transducer_acyclic_min.fst",
+    "testdata/minimize/transducer_acyclic_min1.fst",
+    "testdata/minimize/transducer_acyclic_min2.fst",
+    "testdata/minimize/transducer_cyclic_min.fst",
+    "testdata/minimize/weighted_acyclic_min.fst",
+    "testdata/minimize/weighted_cyclic_min.fst",
+    "testdata/print/p1-nosyms.txt",
+    "testdata/print/p1-syms.txt",
+    "testdata/print/p1.fst",
+    "testdata/print/p1.map",
+    "testdata/print/p2.fst",
+    "testdata/print/p2.txt",
+    "testdata/project/p1.fst",
+    "testdata/project/p2.fst",
+    "testdata/project/p3.fst",
+    "testdata/prune/p1.fst",
+    "testdata/prune/p2.fst",
+    "testdata/push/p1.fst",
+    "testdata/push/p2.fst",
+    "testdata/push/p2r.fst",
+    "testdata/push/p3.fst",
+    "testdata/push/p3r.fst",
+    "testdata/push/p4.fst",
+    "testdata/push/p4r.fst",
+    "testdata/push/p5.fst",
+    "testdata/push/p5r.fst",
+    "testdata/randgen/r1.fst",
+    "testdata/randgen/r2.fst",
+    "testdata/relabel/in2.map",
+    "testdata/relabel/out3.map",
+    "testdata/relabel/r1.fst",
+    "testdata/relabel/r2.fst",
+    "testdata/relabel/r3.fst",
+    "testdata/relabel/r4.fst",
+    "testdata/relabel/r5.fst",
+    "testdata/relabel/r6.fst",
+    "testdata/replace/g1.fst",
+    "testdata/replace/g2.fst",
+    "testdata/replace/g3.fst",
+    "testdata/replace/g4.fst",
+    "testdata/replace/g_out.fst",
+    "testdata/reverse/r1.fst",
+    "testdata/reverse/r2.fst",
+    "testdata/reweight/r1.fst",
+    "testdata/reweight/r1.pot",
+    "testdata/reweight/r2.fst",
+    "testdata/reweight/r3.fst",
+    "testdata/rmepsilon/r1.fst",
+    "testdata/rmepsilon/r2.fst",
+    "testdata/rmepsilon/r4.fst",
+    "testdata/shortest-distance/sd1.dst",
+    "testdata/shortest-distance/sd1.fst",
+    "testdata/shortest-distance/sd1.rdst",
+    "testdata/shortest-distance/sd2.dst",
+    "testdata/shortest-distance/sd2.fst",
+    "testdata/shortest-distance/sd2.rdst",
+    "testdata/shortest-path/sp1.fst",
+    "testdata/shortest-path/sp2.fst",
+    "testdata/shortest-path/sp3.fst",
+    "testdata/shortest-path/sp4.fst",
+    "testdata/shortest-path/sp5.fst",
+    "testdata/shortest-path/sp6.fst",
+    "testdata/shortest-path/sp9.fst",
+    "testdata/state-map/a1.fst",
+    "testdata/state-map/a2.fst",
+    "testdata/state-map/b1.fst",
+    "testdata/state-map/b2.fst",
+    "testdata/symbol-table-ops/t1.map",
+    "testdata/symbol-table-ops/t2.map",
+    "testdata/symbol-table-ops/t3.fst",
+    "testdata/symbol-table/negative.map",
+    "testdata/symbol-table/phones.map",
+    "testdata/symbol-table/space.map",
+    "testdata/symbols/s2.fst",
+    "testdata/synchronize/s1.fst",
+    "testdata/synchronize/s2.fst",
+    "testdata/topsort/t1.fst",
+    "testdata/topsort/t2.fst",
+    "testdata/union/u1.fst",
+    "testdata/union/u2.fst",
+    "testdata/union/u3.fst",
+])
+
+# Description: Tests for finite-state tranducer representations and algorithms to
+# build, combine, search and optimize them.
+
+# UTILITIES
+
+cc_library(
+    name = "algo_tester",
+    testonly = 1,
+    hdrs = ["algo_test.h"],
+    deps = [
+        ":rand-fst",
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+    ],
+)
+
+cc_library(
+    name = "compactors",
+    testonly = 1,
+    hdrs = ["compactors.h"],
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/memory",
+    ],
+)
+
+cc_library(
+    name = "weight_tester",
+    testonly = 1,
+    hdrs = ["weight-tester.h"],
+    deps = [
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/log",
+    ],
+)
+
+cc_library(
+    name = "inline-fst",
+    testonly = 1,
+    hdrs = ["inline-fst.h"],
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+    ],
+)
+
+cc_library(
+    name = "pair-arc",
+    testonly = 1,
+    hdrs = ["pair-arc.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "//openfst/lib:weight",
+    ],
+)
+
+cc_library(
+    name = "power-weight-util",
+    testonly = 1,
+    hdrs = ["power-weight-util.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+cc_library(
+    name = "my_register",
+    testonly = 1,
+    hdrs = ["my_register.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        "//openfst/lib:register",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "fst_test-hdr",
+    testonly = 1,
+    hdrs = ["fst_test.h"],
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:file-util",
+        "@com_google_absl//absl/memory",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_library(
+    name = "lookahead_test-hdr",
+    testonly = 1,
+    hdrs = ["lookahead_test.h"],
+    data = [
+        ":testdata/lookahead/a0.fst",
+        ":testdata/lookahead/a1.fst",
+        ":testdata/lookahead/a2.fst",
+        ":testdata/lookahead/a3.fst",
+        ":testdata/lookahead/a4.fst",
+        ":testdata/lookahead/a5.fst",
+        ":testdata/lookahead/b0.fst",
+        ":testdata/lookahead/b1.fst",
+        ":testdata/lookahead/b2.fst",
+        ":testdata/lookahead/b3.fst",
+        ":testdata/lookahead/b4.fst",
+        ":testdata/lookahead/b5.fst",
+    ],
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_library(
+    name = "basic-fst",
+    testonly = 1,
+    hdrs = ["basic-fst.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "rand-fst",
+    testonly = 1,
+    hdrs = ["rand-fst.h"],
+    deps = [
+        "//openfst/lib",
+        "@com_google_absl//absl/log",
+    ],
+)
+
+# Unit tests.
+
+cc_test(
+    name = "accumulator_test",
+    size = "medium",
+    srcs = ["accumulator_test.cc"],
+    data = [":testdata/accumulator/ac.fst"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "arcsort_test",
+    size = "medium",
+    srcs = ["arcsort_test.cc"],
+    data = [
+        ":testdata/arcsort/a1.fst",
+        ":testdata/arcsort/a2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "arcsort-main_test",
+    size = "medium",
+    srcs = ["arcsort-main_test.sh"],
+    data = [
+        ":testdata/arcsort/a1.fst",
+        ":testdata/arcsort/a2.fst",
+        "//openfst/bin:fstarcsort",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "arc-map_test",
+    size = "medium",
+    srcs = ["arc-map_test.cc"],
+    data = [
+        ":testdata/arc-map/m1.fst",
+        ":testdata/arc-map/m13.fst",
+        ":testdata/arc-map/m14.fst",
+        ":testdata/arc-map/m15.fst",
+        ":testdata/arc-map/m16.fst",
+        ":testdata/arc-map/m2.fst",
+        ":testdata/arc-map/m3.fst",
+        ":testdata/arc-map/m4.fst",
+        ":testdata/arc-map/m5.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "a-star_test",
+    size = "medium",
+    srcs = ["a-star_test.cc"],
+    data = [
+        ":testdata/a-star/dfa.fst",
+        ":testdata/a-star/shortest.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/types:span",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "cache_test",
+    size = "medium",
+    srcs = ["cache_test.cc"],
+    data = [],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "cast_test",
+    size = "small",
+    srcs = ["cast_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "closure_test",
+    size = "medium",
+    srcs = ["closure_test.cc"],
+    data = [
+        ":testdata/closure/c1.fst",
+        ":testdata/closure/c2.fst",
+        ":testdata/closure/c3.fst",
+        ":testdata/closure/c4.fst",
+        ":testdata/closure/c5.fst",
+        ":testdata/closure/c6.fst",
+        ":testdata/closure/c7.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "closure-main_test",
+    size = "medium",
+    srcs = ["closure-main_test.sh"],
+    data = [
+        ":testdata/closure/c1.fst",
+        ":testdata/closure/c2.fst",
+        ":testdata/closure/c3.fst",
+        "//openfst/bin:fstclosure",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "compact_test",
+    size = "medium",
+    srcs = ["compact_test.cc"],
+    data = [
+        ":testdata/compact/c1.fst",
+        ":testdata/compact/c2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        ":compactors",
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "@com_google_absl//absl/log",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "compile-main_test",
+    size = "medium",
+    srcs = ["compile-main_test.sh"],
+    data = [
+        ":testdata/compile/fst.compiled",
+        ":testdata/compile/fst.txt",
+        ":testdata/compile/isyms.map",
+        ":testdata/compile/osyms.map",
+        "//openfst/bin:fstcompile",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_library(
+    name = "compose_test-hdr",
+    testonly = 1,
+    hdrs = ["compose_test.h"],
+    data = [
+        ":testdata/compose/c1.fst",
+        ":testdata/compose/c2.fst",
+        ":testdata/compose/c3.fst",
+        ":testdata/compose/c4.fst",
+        ":testdata/compose/c5.fst",
+        ":testdata/compose/c6.fst",
+        ":testdata/compose/c7.fst",
+        ":testdata/compose/c8.fst",
+    ],
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_test(
+    name = "compose_test",
+    size = "medium",
+    srcs = ["compose_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":compose_test-hdr",
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "compose-main_test",
+    size = "medium",
+    srcs = ["compose-main_test.sh"],
+    data = [
+        ":testdata/compose/c1.fst",
+        ":testdata/compose/c2.fst",
+        ":testdata/compose/c3.fst",
+        ":testdata/compose/c4.fst",
+        ":testdata/compose/c5.fst",
+        ":testdata/compose/c7.fst",
+        "//openfst/bin:fstcompose",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "concat_test",
+    size = "medium",
+    srcs = ["concat_test.cc"],
+    data = [
+        ":testdata/concat/c1.fst",
+        ":testdata/concat/c2.fst",
+        ":testdata/concat/c3.fst",
+        ":testdata/concat/c4.fst",
+        ":testdata/concat/c5.fst",
+        ":testdata/concat/c6.fst",
+        ":testdata/concat/c7.fst",
+        ":testdata/concat/c8.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "concat-main_test",
+    size = "medium",
+    srcs = ["concat-main_test.sh"],
+    data = [
+        ":testdata/concat/c1.fst",
+        ":testdata/concat/c2.fst",
+        ":testdata/concat/c3.fst",
+        "//openfst/bin:fstconcat",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "connect_test",
+    size = "medium",
+    srcs = ["connect_test.cc"],
+    data = [
+        ":testdata/connect/c1.fst",
+        ":testdata/connect/c2.fst",
+        ":testdata/connect/c3.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "connect-main_test",
+    size = "medium",
+    srcs = ["connect-main_test.sh"],
+    data = [
+        ":testdata/connect/c1.fst",
+        ":testdata/connect/c2.fst",
+        "//openfst/bin:fstconnect",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+sh_test(
+    name = "convert-main_test",
+    size = "medium",
+    timeout = "long",
+    srcs = ["convert-main_test.sh"],
+    data = [
+        ":testdata/convert/c1.fst",
+        ":testdata/convert/c2.fst",
+        "//openfst/bin:fstconvert",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstmap",
+        "//openfst/bin:fstproject",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "determinize_test",
+    size = "medium",
+    srcs = ["determinize_test.cc"],
+    data = [
+        ":testdata/determinize/d1.fst",
+        ":testdata/determinize/d2.fst",
+        ":testdata/determinize/d3.fst",
+        ":testdata/determinize/d4.fst",
+        ":testdata/determinize/d5.fst",
+        ":testdata/determinize/d6.fst",
+        ":testdata/determinize/d7.fst",
+        ":testdata/determinize/d8.fst",
+        ":testdata/determinize/d9.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "determinize-main_test",
+    size = "medium",
+    timeout = "long",
+    srcs = ["determinize-main_test.sh"],
+    data = [
+        ":testdata/determinize/d1.fst",
+        ":testdata/determinize/d2.fst",
+        ":testdata/determinize/d3.fst",
+        ":testdata/determinize/d4.fst",
+        ":testdata/determinize/d5.fst",
+        ":testdata/determinize/d6.fst",
+        ":testdata/determinize/d7.fst",
+        ":testdata/determinize/d8.fst",
+        ":testdata/determinize/d9.fst",
+        ":testdata/determinize/delta_test.fst",
+        ":testdata/determinize/delta_test_100.fst",
+        ":testdata/determinize/delta_test_default.fst",
+        "//openfst/bin:fstdeterminize",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "difference_test",
+    size = "medium",
+    srcs = ["difference_test.cc"],
+    data = [
+        ":testdata/difference/d1.fst",
+        ":testdata/difference/d2.fst",
+        ":testdata/difference/d3.fst",
+        ":testdata/difference/d4.fst",
+        ":testdata/difference/d5.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "difference-main_test",
+    size = "medium",
+    srcs = ["difference-main_test.sh"],
+    data = [
+        ":testdata/difference/d1.fst",
+        ":testdata/difference/d2.fst",
+        ":testdata/difference/d3.fst",
+        ":testdata/difference/d4.fst",
+        ":testdata/difference/d5.fst",
+        "//openfst/bin:fstdifference",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "disambiguate_test",
+    size = "medium",
+    srcs = ["disambiguate_test.cc"],
+    data = [
+        ":testdata/disambiguate/d1.fst",
+        ":testdata/disambiguate/d2.fst",
+        ":testdata/disambiguate/d3.fst",
+        ":testdata/disambiguate/d4.fst",
+        ":testdata/disambiguate/d5.fst",
+        ":testdata/disambiguate/d6.fst",
+        ":testdata/disambiguate/d7.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "disambiguate-main_test",
+    size = "medium",
+    srcs = ["disambiguate-main_test.sh"],
+    data = [
+        ":testdata/disambiguate/d1.fst",
+        ":testdata/disambiguate/d2.fst",
+        "//openfst/bin:fstdisambiguate",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+sh_test(
+    name = "draw-main_test",
+    size = "medium",
+    srcs = ["draw-main_test.sh"],
+    data = [
+        ":testdata/draw/draw.fst",
+        ":testdata/draw/draw-2p.dot",
+        ":testdata/draw/draw-5p.dot",
+        "//openfst/bin:fstdraw",
+        "//openfst/bin:setup",
+    ],
+)
+
+sh_test(
+    name = "dso_test",
+    size = "medium",
+    srcs = ["dso_test.sh"],
+    data = [
+        "basic-fst.so",
+        "pair-arc.so",
+        ":testdata/dso/basic.txt",
+        ":testdata/dso/pair.txt",
+        "//openfst/bin:fstcompile",
+        "//openfst/bin:fstmap",
+        "//openfst/bin:fstprint",
+        "//openfst/bin:setup",
+    ],
+    tags = ["manual"],
+)
+
+cc_test(
+    name = "edit-fst_test",
+    size = "medium",
+    srcs = ["edit-fst_test.cc"],
+    data = [
+        ":testdata/edit/e1.fst",
+        ":testdata/edit/e2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "encode_test",
+    size = "medium",
+    srcs = ["encode_test.cc"],
+    data = [
+        ":testdata/encode/delayed_e_cd.fst",
+        ":testdata/encode/e1.fst",
+        ":testdata/encode/e1_c.fst",
+        ":testdata/encode/e1_cd.fst",
+        ":testdata/encode/e1_l.fst",
+        ":testdata/encode/e1_lc.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "encode-main_test",
+    size = "medium",
+    timeout = "long",
+    srcs = ["encode-main_test.sh"],
+    data = [
+        ":testdata/encode/e1.fst",
+        ":testdata/encode/e1_cd.fst",
+        ":testdata/encode/e2.fst",
+        ":testdata/encode/e2_c.fst",
+        "//openfst/bin:fstencode",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "epsnormalize_test",
+    size = "medium",
+    srcs = ["epsnormalize_test.cc"],
+    data = [
+        ":testdata/epsnormalize/e1.fst",
+        ":testdata/epsnormalize/e2.fst",
+        ":testdata/epsnormalize/e3.fst",
+        ":testdata/epsnormalize/e4.fst",
+        ":testdata/epsnormalize/e5.fst",
+        ":testdata/epsnormalize/e6.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "epsnormalize-main_test",
+    size = "medium",
+    srcs = ["epsnormalize-main_test.sh"],
+    data = [
+        ":testdata/epsnormalize/e1.fst",
+        ":testdata/epsnormalize/e2.fst",
+        ":testdata/epsnormalize/e3.fst",
+        ":testdata/epsnormalize/e4.fst",
+        ":testdata/epsnormalize/e5.fst",
+        ":testdata/epsnormalize/e6.fst",
+        "//openfst/bin:fstepsnormalize",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "equal_test",
+    size = "medium",
+    srcs = ["equal_test.cc"],
+    data = [":testdata/intersect/i1.fst"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "equal-main_test",
+    size = "medium",
+    srcs = ["equal-main_test.sh"],
+    data = [
+        ":testdata/intersect/i1.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "equivalent_test",
+    size = "medium",
+    srcs = ["equivalent_test.cc"],
+    data = [
+        ":testdata/equivalent/e1.fst",
+        ":testdata/equivalent/e10.fst",
+        ":testdata/equivalent/e11.fst",
+        ":testdata/equivalent/e12.fst",
+        ":testdata/equivalent/e2.fst",
+        ":testdata/equivalent/e3.fst",
+        ":testdata/equivalent/e4.fst",
+        ":testdata/equivalent/e5.fst",
+        ":testdata/equivalent/e6.fst",
+        ":testdata/equivalent/e7.fst",
+        ":testdata/equivalent/e8.fst",
+        ":testdata/equivalent/e9.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "equivalent-main_test",
+    size = "medium",
+    srcs = ["equivalent-main_test.sh"],
+    data = [
+        ":testdata/equivalent/e1.fst",
+        ":testdata/equivalent/e2.fst",
+        "//openfst/bin:fstequivalent",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "error_test",
+    size = "medium",
+    srcs = ["error_test.cc"],
+    data = [],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_test(
+    name = "expander-fst_test",
+    srcs = ["expander-fst_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "factor-weight_test",
+    size = "medium",
+    srcs = ["factor-weight_test.cc"],
+    data = [
+        ":testdata/factor-weight/f1.fst",
+        ":testdata/factor-weight/f2.fst",
+        ":testdata/factor-weight/f3.fst",
+        ":testdata/factor-weight/f4.fst",
+        ":testdata/factor-weight/f5.fst",
+        ":testdata/factor-weight/f6.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "float-weight_test",
+    size = "small",
+    srcs = ["float-weight_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "fst-file_test",
+    size = "small",
+    srcs = ["fst-file_test.cc"],
+    data = [
+        ":testdata/fst-file/compact1.fst",
+        ":testdata/fst-file/compact1a.fst",
+        ":testdata/fst-file/compact2.fst",
+        ":testdata/fst-file/const1.fst",
+        ":testdata/fst-file/const1a.fst",
+        ":testdata/fst-file/const2.fst",
+        ":testdata/fst-file/vector1.fst",
+        ":testdata/fst-file/vector2.fst",
+        ":testdata/fst-file/vector2_uns.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "generic_register_dso_test",
+    size = "small",
+    srcs = ["generic_register_dso_test.sh"],
+    data = [
+        "generic_register_dso.so",
+        "generic_register_dso_test_helper",
+        "//openfst/bin:setup",
+    ],
+    tags = ["manual"],
+)
+
+cc_test(
+    name = "generic_register_test",
+    size = "small",
+    srcs = ["generic_register_test.cc"],
+    data = [],
+    linkstatic = True,
+    deps = [
+        ":my_register",
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "heap_test",
+    size = "medium",
+    srcs = ["heap_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/random",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "info-main_test",
+    size = "medium",
+    srcs = ["info-main_test.sh"],
+    data = [
+        ":testdata/info/i1.fst",
+        ":testdata/info/i1.info",
+        "//openfst/bin:fstinfo",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "intersect_test",
+    size = "medium",
+    srcs = ["intersect_test.cc"],
+    data = [
+        ":testdata/intersect/i1.fst",
+        ":testdata/intersect/i2.fst",
+        ":testdata/intersect/i3.fst",
+        ":testdata/intersect/i4.fst",
+        ":testdata/intersect/i5.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "intersect-main_test",
+    size = "medium",
+    srcs = ["intersect-main_test.sh"],
+    data = [
+        ":testdata/intersect/i1.fst",
+        ":testdata/intersect/i2.fst",
+        ":testdata/intersect/i3.fst",
+        ":testdata/intersect/i4.fst",
+        ":testdata/intersect/i5.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstintersect",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "interval-set_test",
+    size = "medium",
+    srcs = ["interval-set_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib:interval-set",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "invert_test",
+    size = "medium",
+    srcs = ["invert_test.cc"],
+    data = [
+        ":testdata/invert/i1.fst",
+        ":testdata/invert/i2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "invert-main_test",
+    size = "medium",
+    srcs = ["invert-main_test.sh"],
+    data = [
+        ":testdata/invert/i1.fst",
+        ":testdata/invert/i2.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstinvert",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "isomorphic_test",
+    size = "medium",
+    srcs = ["isomorphic_test.cc"],
+    data = [
+        ":testdata/isomorphic/i1.fst",
+        ":testdata/isomorphic/i2.fst",
+        ":testdata/isomorphic/i3.fst",
+        ":testdata/isomorphic/i4.fst",
+        ":testdata/isomorphic/i5.fst",
+        ":testdata/isomorphic/i6.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "isomorphic-main_test",
+    size = "medium",
+    srcs = ["isomorphic-main_test.sh"],
+    data = [
+        ":testdata/isomorphic/i1.fst",
+        ":testdata/isomorphic/i2.fst",
+        "//openfst/bin:fstisomorphic",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "label-reachable_test",
+    size = "large",
+    srcs = ["label-reachable_test.cc"],
+    data = [
+        ":testdata/label-reachable/a0.fst",
+        ":testdata/label-reachable/a1.fst",
+        ":testdata/label-reachable/a2.fst",
+        ":testdata/label-reachable/a3.fst",
+        ":testdata/label-reachable/a4.fst",
+        ":testdata/label-reachable/a5.fst",
+        ":testdata/label-reachable/a6.fst",
+    ],
+    linkstatic = True,
+    shard_count = 2,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:file-util",
+        "//openfst/lib:interval-set",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "lookahead_test",
+    size = "medium",
+    timeout = "long",
+    srcs = ["lookahead_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":compactors",
+        ":lookahead_test-hdr",
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "map-main_test",
+    size = "medium",
+    timeout = "long",
+    srcs = ["map-main_test.sh"],
+    data = [
+        ":testdata/arc-map/m1.fst",
+        ":testdata/arc-map/m10.fst",
+        ":testdata/arc-map/m11.fst",
+        ":testdata/arc-map/m12.fst",
+        ":testdata/arc-map/m13.fst",
+        ":testdata/arc-map/m14.fst",
+        ":testdata/arc-map/m15.fst",
+        ":testdata/arc-map/m16.fst",
+        ":testdata/arc-map/m4.fst",
+        ":testdata/arc-map/m6.fst",
+        ":testdata/arc-map/m7.fst",
+        ":testdata/arc-map/m8.fst",
+        ":testdata/arc-map/m9.fst",
+        ":testdata/state-map/a1.fst",
+        ":testdata/state-map/a2.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstmap",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "matcher_test",
+    size = "medium",
+    srcs = ["matcher_test.cc"],
+    data = [
+        ":testdata/matcher/a.fst",
+        ":testdata/matcher/a_bb.fst",
+        ":testdata/matcher/bb.fst",
+        ":testdata/matcher/lm.a.fst",
+        ":testdata/matcher/lm.a_bb.fst",
+        ":testdata/matcher/lm.bb.fst",
+        ":testdata/matcher/lm.fst",
+        ":testdata/matcher/m1.fst",
+        ":testdata/matcher/m10.fst",
+        ":testdata/matcher/m11.fst",
+        ":testdata/matcher/m12.fst",
+        ":testdata/matcher/m13.fst",
+        ":testdata/matcher/m14.fst",
+        ":testdata/matcher/m2.fst",
+        ":testdata/matcher/m3.fst",
+        ":testdata/matcher/m4.fst",
+        ":testdata/matcher/m5.fst",
+        ":testdata/matcher/m6.fst",
+        ":testdata/matcher/m7.fst",
+        ":testdata/matcher/m8.fst",
+        ":testdata/matcher/m9.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "minimize_test",
+    size = "medium",
+    srcs = ["minimize_test.cc"],
+    data = [
+        ":testdata/minimize/acyclic_min.fst",
+        ":testdata/minimize/cyclic_min.fst",
+        ":testdata/minimize/m1.fst",
+        ":testdata/minimize/m2.fst",
+        ":testdata/minimize/m3.fst",
+        ":testdata/minimize/m4.fst",
+        ":testdata/minimize/m5.fst",
+        ":testdata/minimize/m6.fst",
+        ":testdata/minimize/transducer_acyclic_min.fst",
+        ":testdata/minimize/transducer_acyclic_min1.fst",
+        ":testdata/minimize/transducer_acyclic_min2.fst",
+        ":testdata/minimize/transducer_cyclic_min.fst",
+        ":testdata/minimize/weighted_acyclic_min.fst",
+        ":testdata/minimize/weighted_cyclic_min.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "memory_test",
+    size = "medium",
+    srcs = ["memory_test.cc"],
+    data = [],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "minimize-main_test",
+    size = "medium",
+    timeout = "long",
+    srcs = ["minimize-main_test.sh"],
+    data = [
+        ":testdata/minimize/acyclic_min.fst",
+        ":testdata/minimize/cyclic_min.fst",
+        ":testdata/minimize/m1.fst",
+        ":testdata/minimize/m2.fst",
+        ":testdata/minimize/m3.fst",
+        ":testdata/minimize/m4.fst",
+        ":testdata/minimize/m5.fst",
+        ":testdata/minimize/m6.fst",
+        ":testdata/minimize/transducer_acyclic_min.fst",
+        ":testdata/minimize/transducer_acyclic_min1.fst",
+        ":testdata/minimize/transducer_acyclic_min2.fst",
+        ":testdata/minimize/transducer_cyclic_min.fst",
+        ":testdata/minimize/weighted_acyclic_min.fst",
+        ":testdata/minimize/weighted_cyclic_min.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstminimize",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "partition_test",
+    size = "medium",
+    srcs = ["partition_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_absl//absl/log",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "power-weight_test",
+    size = "small",
+    srcs = ["power-weight_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":power-weight-util",
+        ":weight_tester",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "power-weight-mappers_test",
+    size = "small",
+    srcs = ["power-weight-mappers_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":power-weight-util",
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "print-main_test",
+    size = "medium",
+    srcs = ["print-main_test.sh"],
+    data = [
+        ":testdata/print/p1.fst",
+        ":testdata/print/p1.map",
+        ":testdata/print/p1-nosyms.txt",
+        ":testdata/print/p1-syms.txt",
+        ":testdata/print/p2.fst",
+        ":testdata/print/p2.txt",
+        "//openfst/bin:fstprint",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "project_test",
+    size = "medium",
+    srcs = ["project_test.cc"],
+    data = [
+        ":testdata/project/p1.fst",
+        ":testdata/project/p2.fst",
+        ":testdata/project/p3.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "project-main_test",
+    size = "medium",
+    srcs = ["project-main_test.sh"],
+    data = [
+        ":testdata/project/p1.fst",
+        ":testdata/project/p2.fst",
+        ":testdata/project/p3.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstproject",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "prune_test",
+    size = "medium",
+    srcs = ["prune_test.cc"],
+    data = [
+        ":testdata/prune/p1.fst",
+        ":testdata/prune/p2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "prune-main_test",
+    size = "medium",
+    srcs = ["prune-main_test.sh"],
+    data = [
+        ":testdata/prune/p1.fst",
+        ":testdata/prune/p2.fst",
+        ":testdata/prune/p3.fst",
+        ":testdata/prune/p4.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstprune",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "push_test",
+    size = "medium",
+    srcs = ["push_test.cc"],
+    data = [
+        ":testdata/push/p1.fst",
+        ":testdata/push/p2.fst",
+        ":testdata/push/p3.fst",
+        ":testdata/push/p4.fst",
+        ":testdata/push/p5.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "push-main_test",
+    size = "medium",
+    timeout = "long",
+    srcs = ["push-main_test.sh"],
+    data = [
+        ":testdata/push/delta_test.fst",
+        ":testdata/push/delta_test_1.fst",
+        ":testdata/push/delta_test_100.fst",
+        ":testdata/push/p1.fst",
+        ":testdata/push/p2.fst",
+        ":testdata/push/p2r.fst",
+        ":testdata/push/p3.fst",
+        ":testdata/push/p3r.fst",
+        ":testdata/push/p4.fst",
+        ":testdata/push/p4r.fst",
+        ":testdata/push/p5.fst",
+        ":testdata/push/p5r.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstpush",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "queue_test",
+    size = "medium",
+    srcs = ["queue_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/log",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "randgen_test",
+    size = "medium",
+    srcs = ["randgen_test.cc"],
+    data = [
+        ":testdata/randgen/r1.fst",
+        ":testdata/randgen/r2.fst",
+        ":testdata/randgen/r3.fst",
+        ":testdata/randgen/r4.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "randgen-main_test",
+    size = "medium",
+    srcs = ["randgen-main_test.sh"],
+    data = [
+        ":testdata/randgen/r1.fst",
+        ":testdata/randgen/r2.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstrandgen",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "relabel_test",
+    size = "medium",
+    srcs = ["relabel_test.cc"],
+    data = [
+        ":testdata/relabel/r1.fst",
+        ":testdata/relabel/r2.fst",
+        ":testdata/relabel/r3.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "relabel-main_test",
+    size = "medium",
+    srcs = ["relabel-main_test.sh"],
+    data = [
+        ":testdata/relabel/in2.map",
+        ":testdata/relabel/in5.pairs",
+        ":testdata/relabel/out3.map",
+        ":testdata/relabel/out6.pairs",
+        ":testdata/relabel/r1.fst",
+        ":testdata/relabel/r2.fst",
+        ":testdata/relabel/r3.fst",
+        ":testdata/relabel/r4.fst",
+        ":testdata/relabel/r5.fst",
+        ":testdata/relabel/r6.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstrelabel",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "replace_test",
+    size = "medium",
+    srcs = ["replace_test.cc"],
+    data = [
+        ":testdata/replace/g1.fst",
+        ":testdata/replace/g2.fst",
+        ":testdata/replace/g3.fst",
+        ":testdata/replace/g4.fst",
+        ":testdata/replace/g_out.fst",
+        ":testdata/replace/i1.fst",
+        ":testdata/replace/i2.fst",
+        ":testdata/replace/i3.fst",
+        ":testdata/replace/lattice.fst",
+        ":testdata/replace/path.fst",
+        ":testdata/replace/r1.fst",
+        ":testdata/replace/r2.fst",
+        ":testdata/replace/r3.fst",
+        ":testdata/replace/r4.fst",
+        ":testdata/replace/r5.fst",
+        ":testdata/replace/s1.fst",
+        ":testdata/replace/s2.fst",
+        ":testdata/replace/s3.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "replace-main_test",
+    size = "medium",
+    srcs = ["replace-main_test.sh"],
+    data = [
+        ":testdata/replace/g1.fst",
+        ":testdata/replace/g2.fst",
+        ":testdata/replace/g3.fst",
+        ":testdata/replace/g4.fst",
+        ":testdata/replace/g_out.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstreplace",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "reverse_test",
+    size = "medium",
+    srcs = ["reverse_test.cc"],
+    data = [
+        ":testdata/reverse/r1.fst",
+        ":testdata/reverse/r2.fst",
+        ":testdata/reverse/r3.fst",
+        ":testdata/reverse/r4.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "reverse-main_test",
+    size = "medium",
+    srcs = ["reverse-main_test.sh"],
+    data = [
+        ":testdata/reverse/r1.fst",
+        ":testdata/reverse/r2.fst",
+        ":testdata/reverse/r3.fst",
+        ":testdata/reverse/r4.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstreverse",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "reweight_test",
+    size = "medium",
+    srcs = ["reweight_test.cc"],
+    data = [
+        ":testdata/reweight/r1.fst",
+        ":testdata/reweight/r2.fst",
+        ":testdata/reweight/r3.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "reweight-main_test",
+    size = "medium",
+    srcs = ["reweight-main_test.sh"],
+    data = [
+        ":testdata/reweight/r1.fst",
+        ":testdata/reweight/r1.pot",
+        ":testdata/reweight/r2.fst",
+        ":testdata/reweight/r3.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstreweight",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "rmepsilon_test",
+    size = "medium",
+    srcs = ["rmepsilon_test.cc"],
+    data = [
+        ":testdata/rmepsilon/r1.fst",
+        ":testdata/rmepsilon/r2.fst",
+        ":testdata/rmepsilon/r3.fst",
+        ":testdata/rmepsilon/r4.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "rmepsilon-main_test",
+    size = "medium",
+    srcs = ["rmepsilon-main_test.sh"],
+    data = [
+        ":testdata/rmepsilon/cycle.fst",
+        ":testdata/rmepsilon/cycle_delta_1.fst",
+        ":testdata/rmepsilon/r1.fst",
+        ":testdata/rmepsilon/r2.fst",
+        ":testdata/rmepsilon/r3.fst",
+        ":testdata/rmepsilon/r4.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstrmepsilon",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "rmfinalepsilon_test",
+    size = "medium",
+    srcs = ["rmfinalepsilon_test.cc"],
+    data = [
+        ":testdata/rmfinalepsilon/r1.fst",
+        ":testdata/rmfinalepsilon/r2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "shortest-distance_test",
+    size = "medium",
+    srcs = ["shortest-distance_test.cc"],
+    data = [
+        ":testdata/shortest-distance/sd1.fst",
+        ":testdata/shortest-distance/sd2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "//openfst/script",
+        "@com_google_absl//absl/log",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "shortest-distance-main_test",
+    size = "medium",
+    srcs = ["shortest-distance-main_test.sh"],
+    data = [
+        ":testdata/shortest-distance/cycle.fst",
+        ":testdata/shortest-distance/cycle_delta_1_shortest.txt",
+        ":testdata/shortest-distance/sd1.dst",
+        ":testdata/shortest-distance/sd1.fst",
+        ":testdata/shortest-distance/sd1.rdst",
+        ":testdata/shortest-distance/sd2.dst",
+        ":testdata/shortest-distance/sd2.fst",
+        ":testdata/shortest-distance/sd2.rdst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstshortestdistance",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "shortest-path_test",
+    size = "medium",
+    srcs = ["shortest-path_test.cc"],
+    data = [
+        ":testdata/shortest-path/first_path_branch.fst",
+        ":testdata/shortest-path/first_path_continue.fst",
+        ":testdata/shortest-path/first_path_early.fst",
+        ":testdata/shortest-path/sp1.fst",
+        ":testdata/shortest-path/sp2.fst",
+        ":testdata/shortest-path/sp3.fst",
+        ":testdata/shortest-path/sp4.fst",
+        ":testdata/shortest-path/sp5.fst",
+        ":testdata/shortest-path/sp6.fst",
+        ":testdata/shortest-path/sp7.fst",
+        ":testdata/shortest-path/sp8.fst",
+        ":testdata/shortest-path/sp9.fst",
+        ":testdata/shortest-path/vexing_tree.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/log",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "shortest-path-main_test",
+    size = "medium",
+    timeout = "long",
+    srcs = ["shortest-path-main_test.sh"],
+    data = [
+        ":testdata/shortest-path/sp1.fst",
+        ":testdata/shortest-path/sp2.fst",
+        ":testdata/shortest-path/sp3.fst",
+        ":testdata/shortest-path/sp4.fst",
+        ":testdata/shortest-path/sp5.fst",
+        ":testdata/shortest-path/sp6.fst",
+        ":testdata/shortest-path/sp7.fst",
+        ":testdata/shortest-path/sp8.fst",
+        ":testdata/shortest-path/sp9.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstshortestpath",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "state-map_test",
+    size = "medium",
+    srcs = ["state-map_test.cc"],
+    data = [
+        ":testdata/state-map/a1.fst",
+        ":testdata/state-map/a2.fst",
+        ":testdata/state-map/b1.fst",
+        ":testdata/state-map/b2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "state-table_test",
+    size = "medium",
+    srcs = ["state-table_test.cc"],
+    data = [
+        ":testdata/state-table/st1.fst",
+        ":testdata/state-table/st2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "string_test",
+    size = "medium",
+    srcs = ["string_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest_main",
+        "@icu//icu4c/source/common:platform",
+    ],
+)
+
+cc_test(
+    name = "symbol-table_test",
+    size = "medium",
+    srcs = ["symbol-table_test.cc"],
+    data = [":testdata/symbol-table/phones.map"],
+    linkstatic = True,
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib:symbol-table",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "symbol-table-ops_test",
+    size = "medium",
+    srcs = ["symbol-table-ops_test.cc"],
+    data = [
+        ":testdata/symbol-table-ops/t1.map",
+        ":testdata/symbol-table-ops/t2.map",
+        ":testdata/symbol-table-ops/t3.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "state-reachable_test",
+    size = "medium",
+    srcs = ["state-reachable_test.cc"],
+    data = [
+        ":testdata/state-reachable/a0.fst",
+        ":testdata/state-reachable/a1.fst",
+        ":testdata/state-reachable/a2.fst",
+        ":testdata/state-reachable/a3.fst",
+        ":testdata/state-reachable/a4.fst",
+        ":testdata/state-reachable/a5.fst",
+        ":testdata/state-reachable/a6.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "symbols-main_test",
+    size = "medium",
+    srcs = ["symbols-main_test.sh"],
+    data = [
+        ":testdata/symbols/relabel.map",
+        ":testdata/symbols/relabel.pairs",
+        ":testdata/symbols/s1.fst",
+        ":testdata/symbols/s2.fst",
+        ":testdata/symbols/s3.fst",
+        ":testdata/symbols/syms.map",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstprint",
+        "//openfst/bin:fstsymbols",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "synchronize_test",
+    size = "medium",
+    srcs = ["synchronize_test.cc"],
+    data = [
+        ":testdata/synchronize/s1.fst",
+        ":testdata/synchronize/s2.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "synchronize-main_test",
+    size = "medium",
+    srcs = ["synchronize-main_test.sh"],
+    data = [
+        ":testdata/synchronize/s1.fst",
+        ":testdata/synchronize/s2.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstsynchronize",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "topsort_test",
+    size = "medium",
+    srcs = ["topsort_test.cc"],
+    data = [
+        ":testdata/topsort/t1.fst",
+        ":testdata/topsort/t2.fst",
+        ":testdata/topsort/t3.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "topsort-main_test",
+    size = "medium",
+    srcs = ["topsort-main_test.sh"],
+    data = [
+        ":testdata/topsort/t1.fst",
+        ":testdata/topsort/t2.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fsttopsort",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "union_test",
+    size = "medium",
+    srcs = ["union_test.cc"],
+    data = [
+        ":testdata/union/u1.fst",
+        ":testdata/union/u2.fst",
+        ":testdata/union/u3.fst",
+        ":testdata/union/u4.fst",
+        ":testdata/union/u5.fst",
+        ":testdata/union/u6.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/script",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "union-find_test",
+    size = "medium",
+    srcs = ["union-find_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib:union-find",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log:flags",
+        "@com_google_benchmark//:benchmark",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+sh_test(
+    name = "union-main_test",
+    size = "medium",
+    srcs = ["union-main_test.sh"],
+    data = [
+        ":testdata/union/u1.fst",
+        ":testdata/union/u2.fst",
+        ":testdata/union/u3.fst",
+        "//openfst/bin:fstequal",
+        "//openfst/bin:fstunion",
+        "//openfst/bin:setup",
+    ],
+)
+
+cc_test(
+    name = "visit_test",
+    size = "medium",
+    srcs = ["visit_test.cc"],
+    data = [
+        ":testdata/visit/v1.fst",
+        ":testdata/visit/v2.fst",
+        ":testdata/visit/v3.fst",
+        ":testdata/visit/v4.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "mapped-file_test",
+    size = "small",
+    srcs = ["mapped-file_test.cc"],
+    data = [
+        ":testdata/mapped-file/heart.txt",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib:file-util",
+        "//openfst/lib:util",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/memory",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+# Regression tests.
+
+[
+    cc_test(
+        name = "algo_test_%s" % weight,
+        size = "large",
+        srcs = [
+            "algo_test.cc",
+            "algo_test.h",
+        ],
+        defines = ["TEST_%s" % weight.upper()],
+        linkstatic = True,
+        deps = [
+            ":rand-fst",
+            "//openfst/compat:compat_memory",
+            "//openfst/lib",
+            "//openfst/lib:fst-decl",
+            "//openfst/lib:weight",
+            "@com_google_absl//absl/flags:flag",
+            "@com_google_absl//absl/flags:parse",  # buildcleaner:keep
+            "@com_google_absl//absl/log",
+            "@com_google_absl//absl/log:flags",
+            "@com_google_absl//absl/memory",
+        ],
+    )
+    for weight in [
+        "tropical",
+        "log",
+        "minmax",
+        "left_string",
+        "right_string",
+        "gallic",
+        "lexicographic",
+        "power",
+    ]
+]
+
+cc_test(
+    name = "fst_test",
+    size = "large",
+    srcs = ["fst_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":compactors",
+        ":fst_test-hdr",
+        "//openfst/extensions/lookahead:arc_lookahead-fst",
+        "//openfst/extensions/lookahead:ilabel_lookahead-fst",
+        "//openfst/extensions/lookahead:olabel_lookahead-fst",
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "//openfst/lib:register",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_test(
+    name = "script_test",
+    size = "small",
+    srcs = ["script_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "//openfst/lib:util",
+        "//openfst/lib:weight",
+        "//openfst/script",
+        "//openfst/script:weight-class",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_test(
+    name = "util_test",
+    size = "small",
+    srcs = ["util_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib:util",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "vector-fst_test",
+    size = "small",
+    srcs = ["vector-fst_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib:fst-decl",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "weight_test",
+    size = "large",
+    srcs = ["weight_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":weight_tester",
+        "//openfst/lib:weight",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/log:flags",
+    ],
+)
+
+cc_test(
+    name = "thread_test",
+    size = "large",
+    srcs = ["thread_test.cc"],
+    data = [
+        ":testdata/thread/a0.fst",
+        ":testdata/thread/a1.fst",
+        ":testdata/thread/a2.fst",
+        ":testdata/thread/a3.fst",
+        ":testdata/thread/a4.fst",
+        ":testdata/thread/a5.fst",
+        ":testdata/thread/b0.fst",
+        ":testdata/thread/b1.fst",
+        ":testdata/thread/b2.fst",
+        ":testdata/thread/b3.fst",
+        ":testdata/thread/b4.fst",
+        ":testdata/thread/b5.fst",
+        ":testdata/thread/c0.fst",
+        ":testdata/thread/c1.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        "//openfst/compat:compat_memory",
+        "//openfst/lib",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/functional:function_ref",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/types:span",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "inline-fst_test",
+    srcs = ["inline-fst_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":inline-fst",
+        "//openfst/lib",
+        "//openfst/lib:fst-decl",
+        "//openfst/lib:weight",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "arc-arena_test",
+    srcs = ["arc-arena_test.cc"],
+    linkstatic = True,
+    deps = [
+        "//openfst/lib",
+        "//openfst/lib:symbol-table",
+        "@com_google_benchmark//:benchmark",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+# Helper for generic_register_dso_test.sh.
+
+cc_binary(
+    name = "generic_register_dso_test_helper",
+    testonly = 1,
+    srcs = ["generic_register_dso_test_helper.cc"],
+    linkstatic = True,
+    deps = [
+        ":my_register",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+    ],
+)
+
+# Shared objects.
+
+cc_binary(
+    name = "basic-fst.so",
+    testonly = 1,
+    srcs = ["basic-fst.cc"],
+    linkshared = 1,
+    linkstatic = True,
+    visibility = ["//visibility:private"],
+    deps = [
+        ":basic-fst",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:register",
+        "//openfst/lib:weight",
+    ],
+)
+
+cc_binary(
+    name = "generic_register_dso.so",
+    testonly = 1,
+    srcs = ["generic_register_dso.cc"],
+    linkshared = 1,
+    linkstatic = True,
+    visibility = ["//visibility:private"],
+    deps = [
+        ":my_register",
+        "//openfst/lib:lib_export_dynamic",
+    ],
+)
+
+cc_binary(
+    name = "pair-arc.so",
+    testonly = 1,
+    srcs = ["pair-arc.cc"],
+    linkshared = 1,
+    linkstatic = True,
+    visibility = ["//visibility:private"],
+    deps = [
+        ":pair-arc",
+        "//openfst/lib",
+        "//openfst/lib:register",
+        "//openfst/script",
+        "//openfst/script:fstscript",
+        "//openfst/script:weight-class",
+    ],
+)

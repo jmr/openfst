@@ -1,0 +1,91 @@
+// Copyright 2025 The OpenFst Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// See www.openfst.org for extensive documentation on this weighted
+// finite-state transducer library.
+//
+// Applies an operation to each arc of an FST.
+
+#include <cstring>
+#include <memory>
+#include <string>
+
+#include "absl/flags/parse.h"
+#include "absl/flags/usage.h"
+#include "absl/flags/declare.h"
+#include "absl/flags/flag.h"
+#include "absl/log/flags.h"
+#include "absl/log/log.h"
+#include "openfst/script/fst-class.h"
+#include "openfst/script/getters.h"
+#include "openfst/script/map.h"
+#include "openfst/script/weight-class.h"
+
+ABSL_DECLARE_FLAG(double, delta);
+ABSL_DECLARE_FLAG(std::string, map_type);
+ABSL_DECLARE_FLAG(double, power);
+ABSL_DECLARE_FLAG(std::string, weight);
+
+int fstmap_main(int argc, char **argv) {
+  namespace s = fst::script;
+  using fst::script::FstClass;
+  using fst::script::WeightClass;
+
+  std::string usage =
+      "Applies an operation to each arc of an FST.\n\n  Usage: ";
+  usage += argv[0];
+  usage += " [in.fst [out.fst]]\n";
+
+  absl::SetProgramUsageMessage(usage.c_str());
+  const auto rest_args = absl::ParseCommandLine(argc, argv);
+  
+  
+  if (rest_args.size() > 3) {
+    LOG(INFO) << absl::ProgramUsageMessage();
+    return 1;
+  }
+
+  const std::string in_name =
+      (rest_args.size() > 1 && strcmp(rest_args[1], "-") != 0) ? rest_args[1] : "";
+  const std::string out_name =
+      (rest_args.size() > 2 && strcmp(rest_args[2], "-") != 0) ? rest_args[2] : "";
+
+  std::unique_ptr<FstClass> ifst(FstClass::Read(in_name));
+  if (!ifst) return 1;
+
+  s::MapType map_type;
+  if (!s::GetMapType(absl::GetFlag(FLAGS_map_type), &map_type)) {
+    LOG(ERROR) << argv[0] << ": Unknown or unsupported map type "
+               << absl::GetFlag(FLAGS_map_type);
+    return 1;
+  }
+
+  const auto weight_param =
+      !absl::GetFlag(FLAGS_weight).empty()
+          ? WeightClass(ifst->WeightType(), absl::GetFlag(FLAGS_weight))
+          : (absl::GetFlag(FLAGS_map_type) == "times"
+                 ? WeightClass::One(ifst->WeightType())
+                 : WeightClass::Zero(ifst->WeightType()));
+
+  std::unique_ptr<FstClass> ofst(
+      s::Map(*ifst, map_type, absl::GetFlag(FLAGS_delta),
+             absl::GetFlag(FLAGS_power), weight_param));
+
+  if (ofst) {
+    return !ofst->Write(out_name);
+  } else {
+    LOG(ERROR) << argv[0] << ": Map failed";
+    return 1;
+  }
+}

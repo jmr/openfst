@@ -1,0 +1,78 @@
+// Copyright 2025 The OpenFst Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// See www.openfst.org for extensive documentation on this weighted
+// finite-state transducer library.
+//
+// Tests if two Far files contains isomorphic (key,fst) pairs.
+
+#include <memory>
+#include <string>
+
+#include "absl/flags/parse.h"
+#include "absl/flags/usage.h"
+#include "absl/flags/declare.h"
+#include "absl/flags/flag.h"
+#include "absl/log/flags.h"
+#include "absl/log/log.h"
+#include "openfst/extensions/far/far-class.h"
+#include "openfst/extensions/far/farscript.h"
+#include "openfst/extensions/far/getters.h"
+#include "openfst/lib/util.h"
+
+ABSL_DECLARE_FLAG(std::string, begin_key);
+ABSL_DECLARE_FLAG(std::string, end_key);
+ABSL_DECLARE_FLAG(double, delta);
+
+int farisomorphic_main(int argc, char **argv) {
+  namespace s = fst::script;
+  using fst::script::FarReaderClass;
+
+  std::string usage = "Compares two FST archives for isomorphism.\n\n  Usage:";
+  usage += argv[0];
+  usage += " in1.far in2.far\n";
+
+  absl::SetProgramUsageMessage(usage.c_str());
+  const auto rest_args = absl::ParseCommandLine(argc, argv);
+  s::ExpandArgs(argc, argv, &argc, &argv);
+  
+
+  if (rest_args.size() != 3) {
+    LOG(INFO) << absl::ProgramUsageMessage();
+    return 1;
+  }
+
+  std::unique_ptr<FarReaderClass> reader1(FarReaderClass::Open(rest_args[1]));
+  if (!reader1) return 1;
+
+  std::unique_ptr<FarReaderClass> reader2(FarReaderClass::Open(rest_args[2]));
+  if (!reader2) return 1;
+
+  const bool result = s::Isomorphic(
+      *reader1, *reader2, absl::GetFlag(FLAGS_delta),
+      absl::GetFlag(FLAGS_begin_key), absl::GetFlag(FLAGS_end_key));
+
+  if (reader1->Error()) {
+    FSTERROR() << "Error reading FAR: " << rest_args[1];
+    return 1;
+  }
+  if (reader2->Error()) {
+    FSTERROR() << "Error reading FAR: " << rest_args[2];
+    return 1;
+  }
+
+  if (!result) VLOG(1) << "FARs are not isomorphic";
+
+  return result ? 0 : 2;
+}

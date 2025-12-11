@@ -1,0 +1,87 @@
+// Copyright 2025 The OpenFst Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// See www.openfst.org for extensive documentation on this weighted
+// finite-state transducer library.
+//
+// Pushes weights and/or output labels in an FST toward the initial or final
+// states.
+
+#include <cstring>
+#include <memory>
+#include <string>
+
+#include "absl/flags/parse.h"
+#include "absl/flags/usage.h"
+#include "absl/flags/declare.h"
+#include "absl/flags/flag.h"
+#include "absl/log/flags.h"
+#include "absl/log/log.h"
+#include "openfst/lib/reweight.h"
+#include "openfst/script/fst-class.h"
+#include "openfst/script/getters.h"
+#include "openfst/script/push.h"
+
+ABSL_DECLARE_FLAG(double, delta);
+ABSL_DECLARE_FLAG(bool, push_weights);
+ABSL_DECLARE_FLAG(bool, push_labels);
+ABSL_DECLARE_FLAG(bool, remove_total_weight);
+ABSL_DECLARE_FLAG(bool, remove_common_affix);
+ABSL_DECLARE_FLAG(std::string, reweight_type);
+
+int fstpush_main(int argc, char **argv) {
+  namespace s = fst::script;
+  using fst::ReweightType;
+  using fst::script::FstClass;
+  using fst::script::VectorFstClass;
+
+  std::string usage = "Pushes weights and/or olabels in an FST.\n\n  Usage: ";
+  usage += argv[0];
+  usage += " [in.fst [out.fst]]\n";
+
+  absl::SetProgramUsageMessage(usage.c_str());
+  const auto rest_args = absl::ParseCommandLine(argc, argv);
+  
+  
+  if (rest_args.size() > 3) {
+    LOG(INFO) << absl::ProgramUsageMessage();
+    return 1;
+  }
+
+  const std::string in_name =
+      (rest_args.size() > 1 && strcmp(rest_args[1], "-") != 0) ? rest_args[1] : "";
+  const std::string out_name =
+      (rest_args.size() > 2 && strcmp(rest_args[2], "-") != 0) ? rest_args[2] : "";
+
+  std::unique_ptr<FstClass> ifst(FstClass::Read(in_name));
+  if (!ifst) return 1;
+
+  const auto flags = s::GetPushFlags(absl::GetFlag(FLAGS_push_weights),
+                                     absl::GetFlag(FLAGS_push_labels),
+                                     absl::GetFlag(FLAGS_remove_total_weight),
+                                     absl::GetFlag(FLAGS_remove_common_affix));
+
+  VectorFstClass ofst(ifst->ArcType());
+
+  ReweightType reweight_type;
+  if (!s::GetReweightType(absl::GetFlag(FLAGS_reweight_type), &reweight_type)) {
+    LOG(ERROR) << argv[0] << ": Unknown or unsupported reweight type: "
+               << absl::GetFlag(FLAGS_reweight_type);
+    return 1;
+  }
+
+  s::Push(*ifst, &ofst, flags, reweight_type, absl::GetFlag(FLAGS_delta));
+
+  return !ofst.Write(out_name);
+}

@@ -1,4 +1,10 @@
-![openfst](logo.svg)
+
+
+<p align="left">
+    <a href="#"><img src="logo.svg"></img></a>
+</p>
+
+<!-- ![openfst](logo.svg) -->
 
 # OpenFst Library
 

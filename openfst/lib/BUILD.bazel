@@ -211,7 +211,6 @@ fst_cc_library(
         ":util",
         ":weight",
         ":windows_defs",
-        "//openfst/compat",
         "//openfst/compat:compat_memory",
         "@com_google_absl//absl/base",
         "@com_google_absl//absl/base:core_headers",

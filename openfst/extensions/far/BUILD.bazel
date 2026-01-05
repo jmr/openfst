@@ -13,7 +13,7 @@
 # limitations under the License.
 
 load("@//openfst/lib:build_rules.bzl", "fst_cc_library")
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -361,5 +361,27 @@ cc_binary(
     deps = [
         ":farprintstrings-main",
         "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_test(
+    name = "far_test",
+    size = "medium",
+    srcs = ["far_test.cc"],
+    data = [
+        ":testdata/test1-01.fst",
+        ":testdata/test1-02.fst",
+        ":testdata/test1-03.fst",
+    ],
+    linkstatic = True,
+    deps = [
+        ":lib",
+        ":script",
+        "//openfst/compat:status_macros",
+        "//openfst/lib:lib_lite",
+        "//openfst/lib:util",
+        "//openfst/script",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_googletest//:gtest_main",
     ],
 )

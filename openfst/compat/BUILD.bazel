@@ -13,7 +13,7 @@
 # limitations under the License.
 
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -49,9 +49,59 @@ cc_library(
     hdrs = ["compat_memory.h"],
 )
 
+cc_test(
+    name = "compat_memory_test",
+    srcs = ["compat_memory_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":compat_memory",
+        "@com_google_absl//absl/memory",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
 cc_library(
     name = "file_path",
     srcs = ["file_path.cc"],
     hdrs = ["file_path.h"],
     deps = ["@com_google_absl//absl/strings"],
+)
+
+cc_test(
+    name = "file_path_test",
+    srcs = ["file_path_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":file_path",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "status_macros",
+    hdrs = ["status_macros.h"],
+    deps = [
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:string_view",
+    ],
+)
+
+cc_test(
+    name = "status_macros_test",
+    srcs = ["status_macros_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":status_macros",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings:cord",
+        "@com_google_absl//absl/strings:string_view",
+        "@com_google_googletest//:gtest_main",
+    ],
 )

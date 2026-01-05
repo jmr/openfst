@@ -444,8 +444,10 @@ class SymbolTable {
 
   // Return the label-agnostic MD5 check-sum for this table. All new symbols
   // added to the table will result in an updated checksum.
-  ABSL_DEPRECATED("Use `LabeledCheckSum()` instead.")
-  const std::string &CheckSum() const { return impl_->CheckSum(); }
+  [[deprecated("Use `LabeledCheckSum()` instead.")]]
+  const std::string& CheckSum() const {
+    return impl_->CheckSum();
+  }
 
   int64_t GetNthKey(ssize_t pos) const { return impl_->GetNthKey(pos); }
 
@@ -504,10 +506,10 @@ class SymbolTable {
       const std::string& path,
       absl::string_view sep = "") const;
 
-  ABSL_DEPRECATED("Use `WriteTextWithStatus` instead.")
+  [[deprecated("Use `WriteTextWithStatus` instead.")]]
   bool WriteText(std::ostream& strm, absl::string_view sep = "") const;
 
-  ABSL_DEPRECATED("Use `WriteTextWithStatus` instead.")
+  [[deprecated("Use `WriteTextWithStatus` instead.")]]
   bool WriteText(const std::string& sink, absl::string_view sep = "") const;
 
   const_iterator begin() const { return const_iterator(*this, 0); }
@@ -545,9 +547,9 @@ class SymbolTable {
 };
 
 // Iterator class for symbols in a symbol table.
-class ABSL_DEPRECATED(
-    "Use SymbolTable::iterator, a C++ compliant iterator, instead")
-    SymbolTableIterator {
+class [[deprecated(
+    "Use SymbolTable::iterator, a C++ compliant iterator, instead")]]
+SymbolTableIterator {
  public:
   explicit SymbolTableIterator(const SymbolTable &table)
       : table_(table), iter_(table.begin()), end_(table.end()) {}

@@ -38,14 +38,6 @@
 
 #include "openfst/compat/compat_memory.h"
 
-#if defined(__GNUC__) || defined(__clang__)
-#define OPENFST_DEPRECATED(message) __attribute__((deprecated(message)))
-#elif defined(_MSC_VER)
-#define OPENFST_DEPRECATED(message) [[deprecated(message)]]
-#else
-#define OPENFST_DEPRECATED(message)
-#endif
-
 namespace fst {
 
 // Downcasting.

@@ -127,7 +127,7 @@ class STTableWriter {
 template <class T, class Reader>
 class STTableReader {
  public:
-  ABSL_DEPRECATED("Use OpenWithStatus instead.")
+  [[deprecated("Use OpenWithStatus instead.")]]
   explicit STTableReader(std::vector<std::string> sources) {
     absl::StatusOr<InitArgs> args = PrepareInitArgs(sources);
     sources_ = std::move(sources);
@@ -152,7 +152,7 @@ class STTableReader {
     return OpenWithStatus(std::vector<std::string>{{std::string(source)}});
   }
 
-  ABSL_DEPRECATED("Use OpenWithStatus instead.")
+  [[deprecated("Use OpenWithStatus instead.")]]
   static STTableReader<T, Reader>* Open(absl::string_view source) {
     absl::StatusOr<std::unique_ptr<STTableReader<T, Reader>>> reader =
         OpenWithStatus(source);
@@ -171,8 +171,8 @@ class STTableReader {
         new STTableReader<T, Reader>(std::move(sources), *std::move(args)));
   }
 
-  ABSL_DEPRECATED("Use OpenWithStatus instead.")
-  static STTableReader<T, Reader> *Open(std::vector<std::string> sources) {
+  [[deprecated("Use OpenWithStatus instead.")]]
+  static STTableReader<T, Reader>* Open(std::vector<std::string> sources) {
     absl::StatusOr<std::unique_ptr<STTableReader<T, Reader>>> reader =
         OpenWithStatus(std::move(sources));
     if (!reader.ok()) {

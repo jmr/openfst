@@ -33,9 +33,9 @@ namespace fst {
 
 // This specifies whether to project on input or output.
 enum class ProjectType { INPUT = 1, OUTPUT = 2 };
-ABSL_DEPRECATED("Use `ProjectType::INPUT` instead.")
+[[deprecated("Use `ProjectType::INPUT` instead.")]]
 inline constexpr ProjectType PROJECT_INPUT = ProjectType::INPUT;
-ABSL_DEPRECATED("Use `ProjectType::OUTPUT` instead.")
+[[deprecated("Use `ProjectType::OUTPUT` instead.")]]
 inline constexpr ProjectType PROJECT_OUTPUT = ProjectType::OUTPUT;
 
 // Mapper to implement projection per arc.

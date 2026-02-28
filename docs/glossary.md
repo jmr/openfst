@@ -6,11 +6,11 @@ acceptor <a id="acceptor"/>
     transducer with the input and output label of each transition being equal.
 
 accessible <a id="accessible"/>
-:   A state **q** is accessible iff there is a path from the initial state to
-    **q**.
+:   A state $q$ is accessible iff there is a path from the initial state to
+    $q$.
 
 co-accessible <a id="co-accessible"/>
-:   A state **q** is co-accessible iff there is a path from **q** to a final
+:   A state $q$ is co-accessible iff there is a path from $q$ to a final
     state.
 
 delayed <a id="delayed"/>
@@ -21,7 +21,7 @@ delayed <a id="delayed"/>
     visited.
 
 deterministic <a id="deterministic"/>
-:   An acceptor is deterministic iff for each state **q** there is at most one
+:   An acceptor is deterministic iff for each state $q$ there is at most one
     transition labeled with a given label. A transducer can be input
     deterministic (or *subsequential*) or output deterministic.
 

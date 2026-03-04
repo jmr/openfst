@@ -210,12 +210,11 @@ Additional arc information:
 
 ## Base FSTs
 
-Every `Fst`
-[`Fst`](https://www.openfst.org/doxygen/fst/html/classfst_1_1Fst.html) must
-specify an initial state, the final weights, arc and epsilon counts per states,
-an Fst type name, the Fst's [properties](advanced_usage.md#properties), how to
-copy, read and write the Fst, and the input and output symbol tables (if any).
-In particular, the base `Fst` class has the interface:
+Every [`Fst`](https://www.openfst.org/doxygen/fst/html/classfst_1_1Fst.html)
+must specify an initial state, the final weights, arc and epsilon counts per
+states, an Fst type name, the Fst's [properties](advanced_usage.md#properties),
+how to copy, read and write the Fst, and the input and output symbol tables (if
+any). In particular, the base `Fst` class has the interface:
 
 ```cpp
 template <class A>

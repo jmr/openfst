@@ -26,15 +26,16 @@ In addition, the following must be defined for a `Weight`:
 *   `Hash`: maps weight to `size_t`.
 *   `ApproxEqual`: approximate equality (for inexact weights)
 *   `Quantize`: quantizes wrt delta (for inexact weights)
-*   `Divide`: $\forall a,b,c$ s.t. $\text{Times}(a, b) = c \Rightarrow b' =
-    \text{Divide}(c, a, \mathtt{DIVIDE\_LEFT})$ if a left semiring,
-    $b'.\text{Member}()$ and $\text{Times}(a, b') = c \Rightarrow a' =
-    \text{Divide}(c, b, \mathtt{DIVIDE\_RIGHT})$ if a right semiring and
-    $a'.\text{Member}()$ and $\text{Times}(a', b) = c \Rightarrow b' =
-    \text{Divide}(c, a) = \text{Divide}(c, a, \mathtt{DIVIDE\_ANY}) =
-    \text{Divide}(c, a, \mathtt{DIVIDE\_LEFT}) = \text{Divide}(c, a,
-    \mathtt{DIVIDE\_RIGHT})$ if a commutative semiring, $b'.\text{Member}()$
-    and $\text{Times}(a, b') = \text{Times}(b', a) = c$
+*   `Divide`: $\forall a,b,c$ s.t.
+    *   *Left semiring*: $\text{Times}(a, b) = c \Rightarrow b' =
+        \text{Divide}(c, a, \mathtt{DIVIDE\_LEFT})$, $b'.\text{Member}()$
+    *   *Right semiring*: $\text{Times}(a, b') = c \Rightarrow a' =
+        \text{Divide}(c, b, \mathtt{DIVIDE\_RIGHT})$, $a'.\text{Member}()$
+    *   *Commutative semiring*: $\text{Times}(a', b) = c \Rightarrow b' =
+        \text{Divide}(c, a) = \text{Divide}(c, a, \mathtt{DIVIDE\_ANY}) =
+        \text{Divide}(c, a, \mathtt{DIVIDE\_LEFT}) = \text{Divide}(c, a,
+        \mathtt{DIVIDE\_RIGHT})$, $\text{Times}(a,b') = \text{Times}(b', a) =
+        c$.
 *   `ReverseWeight`: the type of the corresponding reverse weight. Typically the
     same type as `Weight` for a (both left and right) semiring. For the left
     string semiring, it is the right string semiring.

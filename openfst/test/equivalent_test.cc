@@ -94,7 +94,7 @@ class EquivTest : public testing::Test {
     empty_fa = std::make_unique<VectorFst<Arc>>();
     empty_fa->SetStart(empty_fa->AddState());
     empty_fa->AddState();
-    empty_fa->AddArc(0, Arc(1, 1, Weight(0), 1));
+    empty_fa->AddArc(0, Arc(1, 1, Weight::One(), 1));
     equiv_fsts_.back()["empty2"] = std::move(empty_fa);
 
     // FA containing a start and a final state connected by a zero-weight

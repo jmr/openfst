@@ -81,7 +81,7 @@ TEST_F(EqualTest, MismatchedStart_WeightEqual) {
 
 TEST_F(EqualTest, MismatchedFinal) {
   VectorFst<Arc> fst(*fst_);
-  fst.SetFinal(1, Weight(0.0F));
+  fst.SetFinal(1, Weight::One());
   ASSERT_FALSE(Equal(*fst_, fst));
   ASSERT_FALSE(Equal(*fst_, fst, kDelta, kEqualAll));
   ASSERT_TRUE(Equal(*fst_, fst, kDelta, kEqualAll & ~kEqualFsts));
@@ -89,7 +89,7 @@ TEST_F(EqualTest, MismatchedFinal) {
 
 TEST_F(EqualTest, MismatchedArc) {
   VectorFst<Arc> fst(*fst_);
-  fst.AddArc(1, Arc(0, 0, Weight(0.0F), 3));
+  fst.AddArc(1, Arc(0, 0, Weight::One(), 3));
   ASSERT_FALSE(Equal(*fst_, fst));
   ASSERT_FALSE(Equal(*fst_, fst, kDelta, kEqualAll));
   ASSERT_TRUE(Equal(*fst_, fst, kDelta, kEqualAll & ~kEqualFsts));

@@ -198,7 +198,7 @@ TEST_F(ShortestPathTest, ShortestPathWithOptions) {
     ASSERT_TRUE(Equal(*spfst2_, paths));
 
     ASSERT_EQ(distance.size(), 5);
-    ASSERT_EQ(distance[0], Weight(0.0));
+    ASSERT_EQ(distance[0], Weight::One());
     ASSERT_EQ(distance[1], Weight(3.0));
     ASSERT_EQ(distance[2], Weight(5.0));
     ASSERT_EQ(distance[3], Weight(7.0));
@@ -210,7 +210,7 @@ TEST_F(ShortestPathTest, ShortestPathWithOptions) {
     ASSERT_TRUE(Equal(*spfst3_, paths));
 
     ASSERT_EQ(distance.size(), 5);
-    ASSERT_EQ(distance[0], Weight(0.0));
+    ASSERT_EQ(distance[0], Weight::One());
     ASSERT_EQ(distance[1], Weight(3.0));
     ASSERT_EQ(distance[2], Weight(5.0));
     ASSERT_EQ(distance[3], Weight(7.0));
@@ -222,7 +222,7 @@ TEST_F(ShortestPathTest, ShortestPathWithOptions) {
     ASSERT_TRUE(Equal(*spfst4_, paths));
 
     ASSERT_EQ(distance.size(), 5);
-    ASSERT_EQ(distance[0], Weight(0.0));
+    ASSERT_EQ(distance[0], Weight::One());
     ASSERT_EQ(distance[1], Weight(3.0));
     ASSERT_EQ(distance[2], Weight(5.0));
     ASSERT_EQ(distance[3], Weight(7.0));
@@ -248,7 +248,7 @@ TEST_F(ShortestPathTest, ShortestPathWithOptions) {
     ASSERT_TRUE(Equal(*spfst6_, paths));
 
     ASSERT_EQ(distance.size(), 5);
-    ASSERT_EQ(distance[0], Weight(0.0));
+    ASSERT_EQ(distance[0], Weight::One());
     ASSERT_EQ(distance[1], Weight(3.0));
     ASSERT_EQ(distance[2], Weight(5.0));
     ASSERT_EQ(distance[3], Weight(7.0));
@@ -260,7 +260,7 @@ TEST_F(ShortestPathTest, ShortestPathWithOptions) {
     ASSERT_TRUE(Equal(*spfst7_, paths));
 
     ASSERT_EQ(distance.size(), 5);
-    ASSERT_EQ(distance[0], Weight(0.0));
+    ASSERT_EQ(distance[0], Weight::One());
     ASSERT_EQ(distance[1], Weight(3.0));
     ASSERT_EQ(distance[2], Weight(5.0));
     ASSERT_EQ(distance[3], Weight(7.0));
@@ -272,7 +272,7 @@ TEST_F(ShortestPathTest, ShortestPathWithOptions) {
     ASSERT_TRUE(Equal(*spfst8_, paths));
 
     ASSERT_EQ(distance.size(), 5);
-    ASSERT_EQ(distance[0], Weight(0.0));
+    ASSERT_EQ(distance[0], Weight::One());
     ASSERT_EQ(distance[1], Weight(3.0));
     ASSERT_EQ(distance[2], Weight(5.0));
     ASSERT_EQ(distance[3], Weight(7.0));

@@ -302,10 +302,10 @@ TEST(QueueTester, TopOrderTest) {
   fst.AddState();
   fst.AddState();
   fst.SetStart(2);
-  fst.SetFinal(0, StdArc::Weight(0.0));
-  fst.AddArc(1, StdArc(1, 1, StdArc::Weight(0.0), 0));
-  fst.AddArc(2, StdArc(1, 1, StdArc::Weight(0.0), 1));
-  fst.AddArc(2, StdArc(1, 1, StdArc::Weight(0.0), 0));
+  fst.SetFinal(0, StdArc::Weight::One());
+  fst.AddArc(1, StdArc(1, 1, StdArc::Weight::One(), 0));
+  fst.AddArc(2, StdArc(1, 1, StdArc::Weight::One(), 1));
+  fst.AddArc(2, StdArc(1, 1, StdArc::Weight::One(), 0));
 
   TopOrderQueue<int> queue(fst, AnyArcFilter<StdArc>());
   queue.Enqueue(0);

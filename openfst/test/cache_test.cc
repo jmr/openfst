@@ -56,7 +56,7 @@ class CacheTest : public testing::Test {
     }
 
     // Adds arcs.
-    Arc arc(0, 0, Weight(0.0), 0);
+    Arc arc(0, 0, Weight::One(), 0);
     store.AddArc(state4, arc);
     store.AddArc(state4, arc);
     ASSERT_EQ(state4->NumArcs(), 2);
@@ -158,7 +158,7 @@ class CacheTest : public testing::Test {
     ASSERT_TRUE(store.GetState(0) != nullptr);
     ASSERT_TRUE(store.GetState(2) != nullptr);
 
-    Arc arc(0, 0, Weight(0.0), 0);
+    Arc arc(0, 0, Weight::One(), 0);
     for (auto i = 0; i < kMinCacheSize / sizeof(Arc); ++i) state4->PushArc(arc);
     store.SetArcs(state4);
 

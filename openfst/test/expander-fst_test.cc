@@ -46,10 +46,10 @@ class TestExpand {
   template <class State>
   void Expand(StateId state_id, State* state) {
     if (state_id < 9) {
-      state->AddArc(StdArc(0, 0, StdArc::Weight(0.0f), state_id + 1));
+      state->AddArc(StdArc(0, 0, StdArc::Weight::One(), state_id + 1));
     }
     if (state_id < 10) {
-      state->AddArc(StdArc(0, 0, StdArc::Weight(0.0f), state_id + 2));
+      state->AddArc(StdArc(0, 0, StdArc::Weight::One(), state_id + 2));
     }
     if (state_id == 10) {
       state->SetFinal(StdArc::Weight(1.0f));

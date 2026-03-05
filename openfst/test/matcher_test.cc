@@ -368,7 +368,7 @@ TEST_F(MatcherTest, PhiMatcherFinal) {
   EXPECT_EQ(matcher2.Final(1), Weight(1.0));
   EXPECT_EQ(matcher2.Final(2), Weight(5.85650349));
   EXPECT_EQ(matcher2.Final(3), Weight(1.356674969));
-  EXPECT_EQ(matcher2.Final(4), Weight(0.0));
+  EXPECT_EQ(matcher2.Final(4), Weight::One());
 
   fst.SetFinal(1, Arc::Weight::Zero());
   fst.AddArc(1, Arc(0, 0, Weight(0.5), 1));

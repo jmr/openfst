@@ -72,7 +72,7 @@ TEST_F(ShortestDistanceTest, ShortestDistance) {
   // Tests forward.
   ShortestDistance(*sdfst1_, &distance);
   ASSERT_EQ(distance.size(), 4);
-  ASSERT_EQ(distance[0], Weight(0.0));
+  ASSERT_EQ(distance[0], Weight::One());
   ASSERT_EQ(distance[1], Weight(3.0));
   ASSERT_EQ(distance[2], Weight(5.0));
   ASSERT_EQ(distance[3], Weight(7.0));
@@ -88,7 +88,7 @@ TEST_F(ShortestDistanceTest, ShortestDistance) {
   // Tests forward.
   ShortestDistance(*sdfst2_, &distance);
   ASSERT_EQ(distance.size(), 4);
-  ASSERT_EQ(distance[0], Weight(0.0));
+  ASSERT_EQ(distance[0], Weight::One());
   ASSERT_EQ(distance[1], Weight(3.0));
   ASSERT_EQ(distance[2], Weight(5.0));
   ASSERT_EQ(distance[3], Weight(7.0));
@@ -160,7 +160,7 @@ TEST_F(ShortestDistanceTest, ShortestDistanceWithOptions) {
     ShortestDistance(*sdfst1_, &distance, opts);
 
     ASSERT_EQ(distance.size(), 4);
-    ASSERT_EQ(distance[0], Weight(0.0));
+    ASSERT_EQ(distance[0], Weight::One());
     ASSERT_EQ(distance[1], Weight(3.0));
     ASSERT_EQ(distance[2], Weight(5.0));
     ASSERT_EQ(distance[3], Weight(7.0));
@@ -183,7 +183,7 @@ TEST_F(ShortestDistanceTest, ShortestDistanceWithOptions) {
     ShortestDistance(*sdfst2_, &distance, opts);
 
     ASSERT_EQ(distance.size(), 4);
-    ASSERT_EQ(distance[0], Weight(0.0));
+    ASSERT_EQ(distance[0], Weight::One());
     ASSERT_EQ(distance[1], Weight(3.0));
     ASSERT_EQ(distance[2], Weight(5.0));
     ASSERT_EQ(distance[3], Weight(7.0));

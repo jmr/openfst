@@ -644,7 +644,7 @@ void Compressor<Arc>::DecodeProcessedFst(const std::vector<StateId>& input,
     ++main_it;
     for (StateId temp_int = 0; temp_int < number_of_final_states; ++temp_int) {
       if (unweighted) {
-        fst->SetFinal(*main_it, Weight(0));
+        fst->SetFinal(*main_it, Weight::One());
       } else {
         fst->SetFinal(*main_it, final_weight_[temp_int]);
       }

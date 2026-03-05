@@ -102,7 +102,7 @@ class ArcArena {
 
   void DropArcs() { next_ = arcs_; }
 
-  size_t Size() { return total_size_; }
+  size_t Size() const { return total_size_; }
 
   void Clear() {
     blocks_.resize(1);
@@ -137,7 +137,7 @@ class ArcArena {
   Arc* arcs_;
   Arc* next_;
   const Arc* end_;
-  size_t block_size_;
+  const size_t block_size_;
   size_t first_block_size_;
   size_t total_size_;
   size_t max_retained_size_;
@@ -183,10 +183,10 @@ class ArcArenaStateStore {
           narcs_(narcs),
           arcs_(arcs) {}
 
-    Weight final_weight_;
-    size_t niepsilons_;
-    size_t noepsilons_;
-    size_t narcs_;
+    const Weight final_weight_;
+    const size_t niepsilons_;
+    const size_t noepsilons_;
+    const size_t narcs_;
     const Arc* arcs_;
 
     friend class ArcArenaStateStore<Arc>;

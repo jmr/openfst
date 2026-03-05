@@ -14,7 +14,7 @@
 
 # See https://github.com/actions/runner-images.
 
-name: "CMake build (x64 Linux)"
+name: "CMake (x64 Linux)"
 
 on:
   push:
@@ -25,6 +25,10 @@ on:
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: write
 
 jobs:
     build-and-test-x64-linux-cmake:
@@ -46,7 +50,7 @@ jobs:
         - name: Install dependendcies
           run: |
             python3 -m pip install --break-system-packages absl-py cython
-        - name: Restore Bazel cache
+        - name: Restore CMake cache
           uses: actions/cache/restore@v5
           id: cmake-cache-restore
           with:

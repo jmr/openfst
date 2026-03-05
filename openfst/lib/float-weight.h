@@ -94,8 +94,6 @@ class FloatWeightTpl {
   constexpr const T& Value() const { return value_; }
 
  protected:
-  void SetValue(const T& f) { value_ = f; }
-
   static constexpr absl::string_view GetPrecisionString() {
     return sizeof(T) == 4   ? ""
            : sizeof(T) == 1 ? "8"

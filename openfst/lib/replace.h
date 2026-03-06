@@ -1167,7 +1167,7 @@ class ArcIterator<ReplaceFst<Arc, StateTable, CacheStore>> {
     if (local_data_.ref_count) --(*local_data_.ref_count);
   }
 
-  void ExpandAndCache() const __attribute__((noinline)) {
+  void ExpandAndCache() const {
     // TODO: revisit this.
     // fst_.GetImpl()->Expand(s_, tuple_, local_data_);
     // (fst_.GetImpl())->CacheImpl<A>*>::InitArcIterator(s_,

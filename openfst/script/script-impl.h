@@ -160,11 +160,20 @@ struct Operation {
   using Registerer = GenericRegisterer<Register>;
 };
 
+// Force the compiler to keep the symbol.
+#if !defined(_WIN32) || !defined(_MSC_VER)
+#define _KEEP_SYMBOL __attribute__((used))
+#else
+// Unlike GCC/Clang, MSVC generally won't optimize away a static variable
+// with a constructor if it's compiled directly into the target binary.
+#define _KEEP_SYMBOL
+#endif  // WIN32 || _MSC_VER
+
 // Macro for registering new types of operations.
-#define REGISTER_FST_OPERATION(Op, Arc, ArgPack)               \
-  static fst::script::Operation<ArgPack>::Registerer           \
-      arc_dispatched_operation_##ArgPack##Op##Arc##_registerer \
-      __attribute__((used)) ({#Op, Arc::Type()}, Op<Arc>)
+#define REGISTER_FST_OPERATION(Op, Arc, ArgPack)                  \
+  static _KEEP_SYMBOL fst::script::Operation<ArgPack>::Registerer \
+      arc_dispatched_operation_##ArgPack##Op##Arc##_registerer(   \
+          {#Op, Arc::Type()}, Op<Arc>)
 
 // A macro that calls REGISTER_FST_OPERATION for widely-used arc types.
 #define REGISTER_FST_OPERATION_3ARCS(Op, ArgPack) \

@@ -2229,7 +2229,6 @@ cc_test(
     srcs = ["script_test.cc"],
     linkstatic = True,
     deps = [
-        "//openfst/compat:init",
         "//openfst/lib",
         "//openfst/lib:symbol-table",
         "//openfst/lib:util",
@@ -2237,7 +2236,6 @@ cc_test(
         "//openfst/script",
         "//openfst/script:weight-class",
         "@com_google_absl//absl/flags:flag",
-        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/strings",
         "@com_google_googletest//:gtest",
     ],

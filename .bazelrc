@@ -92,6 +92,10 @@ build:windows --copt=/Zc:preprocessor
 # Increase linker stack size.
 build:windows --linkopt=/STACK:8388608
 
+# Enable the runfiles tree on Windows. The unit tests cannot find the test data
+# otherwise.
+build:windows --enable_runfiles
+
 # ------------------------------------------------------------------------------
 # Options for --config=gcc, gcc_old, llvm, and llvm_old.
 # ------------------------------------------------------------------------------

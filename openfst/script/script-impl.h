@@ -160,31 +160,20 @@ struct Operation {
   using Registerer = GenericRegisterer<Register>;
 };
 
-// Prevents the compiler and linker from dropping a symbol even if it appears
-// unused. This is essential for static registration variables whose
-// constructors perform registration but are never directly referenced.
-#if defined(__GNUC__)
-#define OPENFST_KEEP_SYMBOL [[gnu::used, gnu::retain]]
+// Force the compiler to keep the symbol.
+#if !defined(_WIN32) || !defined(_MSC_VER)
+#define _KEEP_SYMBOL __attribute__((used))
 #else
-#define OPENFST_KEEP_SYMBOL
-#endif
-
-// Instructs the MSVC linker to include the specified symbol, serving the same
-// purpose as OPENFST_KEEP_SYMBOL but specifically for the MSVC linker.
-#ifdef _MSC_VER
-#define OPENFST_FORCE_LINK_VAR(var_name) \
-  __pragma(comment(linker, "/include:" #var_name))
-#else
-#define OPENFST_FORCE_LINK_VAR(var_name)
-#endif
+// Unlike GCC/Clang, MSVC generally won't optimize away a static variable
+// with a constructor if it's compiled directly into the target binary.
+#define _KEEP_SYMBOL
+#endif  // WIN32 || _MSC_VER
 
 // Macro for registering new types of operations.
-#define REGISTER_FST_OPERATION(Op, Arc, ArgPack)                         \
-  OPENFST_KEEP_SYMBOL static fst::script::Operation<ArgPack>::Registerer \
-      arc_dispatched_operation_##ArgPack##Op##Arc##_registerer(          \
-          {#Op, Arc::Type()}, Op<Arc>);                                  \
-  OPENFST_FORCE_LINK_VAR(                                                \
-      arc_dispatched_operation_##ArgPack##Op##Arc##_registerer);
+#define REGISTER_FST_OPERATION(Op, Arc, ArgPack)                  \
+  static _KEEP_SYMBOL fst::script::Operation<ArgPack>::Registerer \
+      arc_dispatched_operation_##ArgPack##Op##Arc##_registerer(   \
+          {#Op, Arc::Type()}, Op<Arc>)
 
 // A macro that calls REGISTER_FST_OPERATION for widely-used arc types.
 #define REGISTER_FST_OPERATION_3ARCS(Op, ArgPack) \

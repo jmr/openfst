@@ -21,7 +21,6 @@
 
 #include <array>
 #include <initializer_list>
-#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -29,6 +28,7 @@
 
 #include "openfst/compat/file_path.h"
 #include "gtest/gtest.h"
+#include "absl/container/flat_hash_map.h"
 #include "absl/flags/flag.h"
 #include "absl/memory/memory.h"
 #include "openfst/compat/compat_memory.h"
@@ -63,31 +63,31 @@ static constexpr std::array fst_names{
     std::initializer_list<absl::string_view>{"e11", "e12"}};
 
 class EquivTest : public testing::Test {
- public:
+ protected:
   // Map from string IDs to FSTs.
   using Name2FstMap =
-      std::map<absl::string_view, std::unique_ptr<VectorFst<Arc>>>;
+      absl::flat_hash_map<absl::string_view, std::unique_ptr<VectorFst<Arc>>>;
 
- protected:
   void SetUp() override {
     const std::string kTestPath =
         JoinPath(std::string("."),
                        "openfst/test/testdata/equivalent");
     for (const auto& init_list : fst_names) {
-      equiv_fsts_.push_back(Name2FstMap());
+      Name2FstMap fsts;
       for (absl::string_view s : init_list) {
         const std::string source =
             JoinPath(kTestPath, absl::StrCat(s, ".fst"));
-        equiv_fsts_.back()[s] = absl::WrapUnique(VectorFst<Arc>::Read(source));
+        fsts[s] = absl::WrapUnique(VectorFst<Arc>::Read(source));
       }
+      equiv_fsts_.push_back(std::move(fsts));
     }
     // Extra set of FA's for the empty language: constructed explicitly
     // to implement some weird/pathological cases.
-    equiv_fsts_.push_back(Name2FstMap());
+    Name2FstMap extra_fsts;
 
     // FA without states.
     auto empty_fa = std::make_unique<VectorFst<Arc>>();
-    equiv_fsts_.back()["empty1"] = std::move(empty_fa);
+    extra_fsts["empty1"] = std::move(empty_fa);
 
     // FA containing a start state and a transition, but without final
     // states.
@@ -95,7 +95,7 @@ class EquivTest : public testing::Test {
     empty_fa->SetStart(empty_fa->AddState());
     empty_fa->AddState();
     empty_fa->AddArc(0, Arc(1, 1, Weight::One(), 1));
-    equiv_fsts_.back()["empty2"] = std::move(empty_fa);
+    extra_fsts["empty2"] = std::move(empty_fa);
 
     // FA containing a start and a final state connected by a zero-weight
     // transition.
@@ -103,10 +103,13 @@ class EquivTest : public testing::Test {
     empty_fa->SetStart(empty_fa->AddState());
     empty_fa->SetFinal(empty_fa->AddState(), Weight::One());
     empty_fa->AddArc(0, Arc(1, 1, Weight::Zero(), 1));
-    equiv_fsts_.back()["empty3"] = std::move(empty_fa);
+    extra_fsts["empty3"] = std::move(empty_fa);
+
+    equiv_fsts_.push_back(std::move(extra_fsts));
   }
 
   void TearDown() override { equiv_fsts_.clear(); }
+
   // Collections of equivalent FSTs. Each collection implements a
   // different regular language.
   std::vector<Name2FstMap> equiv_fsts_;
@@ -119,8 +122,8 @@ TEST_F(EquivTest, Equiv) {
          it != equiv_fsts_[i].end(); ++it) {
       for (Name2FstMap::const_iterator it2 = it; it2 != equiv_fsts_[i].end();
            ++it2) {
-        ASSERT_TRUE(Equivalent(*it->second, *it2->second));
-        ASSERT_TRUE(Equivalent(*it2->second, *it->second));
+        EXPECT_TRUE(Equivalent(*it->second, *it2->second));
+        EXPECT_TRUE(Equivalent(*it2->second, *it->second));
       }
     }
   }
@@ -138,8 +141,8 @@ TEST_F(EquivTest, Nequiv) {
            it != equiv_fsts_[i].end(); ++it) {
         for (Name2FstMap::const_iterator it2 = equiv_fsts_[j].begin();
              it2 != equiv_fsts_[j].end(); ++it2) {
-          ASSERT_FALSE(Equivalent(*it->second, *it2->second));
-          ASSERT_FALSE(Equivalent(*it2->second, *it->second));
+          EXPECT_FALSE(Equivalent(*it->second, *it2->second));
+          EXPECT_FALSE(Equivalent(*it2->second, *it->second));
         }
       }
     }

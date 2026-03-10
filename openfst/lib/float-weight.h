@@ -72,8 +72,7 @@ class FloatWeightTpl {
 
   FloatWeightTpl() noexcept = default;
 
-  // TODO: Enable "explicit" when dependent code is resolved.
-  /* explicit */ constexpr FloatWeightTpl(T f) : value_(f) {}
+  explicit constexpr FloatWeightTpl(T f) : value_(f) {}
 
   std::istream& Read(std::istream& strm) { return ReadType(strm, &value_); }
 

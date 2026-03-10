@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-#include "openfst/compat/init.h"
 #include "gtest/gtest.h"
 #include "absl/flags/flag.h"
 #include "absl/strings/numbers.h"

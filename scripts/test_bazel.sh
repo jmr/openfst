@@ -18,8 +18,10 @@ set -euxo pipefail
 
 echo "--- Running Bazel tests ---"
 
-# Mirroring the bazel_x64_linux workflow.
-bazel test -c fastbuild --config=dev \
+# Mirroring the bazel_x64_linux workflow, but we need --config=gcc
+# to be safe and work around the gcc/binutils version mismatch.
+# (See .bazelrc.)
+bazel test -c fastbuild --config=dev --config=host_gcc \
   --test_size_filters=-enormous \
   --test_output=errors \
   //openfst/...

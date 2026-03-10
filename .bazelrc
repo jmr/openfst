@@ -43,6 +43,15 @@ build:gcc_clang --cxxopt=-Wno-overloaded-virtual
 build:gcc_clang --cxxopt=-Wno-defaulted-function-deleted
 build:gcc_clang --cxxopt=-Wno-nullability-completeness
 
+# WORKAROUND: GCC 15+ assembler generates `.sframe` stack trace sections by
+# default.  The linker fails to handle `.sframe` references correctly during
+# COMDAT section discarding ("relocation refers to local symbol... which is
+# defined in a discarded section").  We disable `.sframe` generation in the
+# assembler to fix the build.  This can be removed when it no longer gives
+# an error on gLinux Rodete.  gcc 15.2.0 and binutils 2.45 gives an error.
+# TOD0: b/491436022 - Try again with binutils 2.46.
+build:host_gcc --cxxopt=-Wa,--gsframe=no
+
 # ------------------------------------------------------------------------------
 # Options for Linux.
 # ------------------------------------------------------------------------------

@@ -21,6 +21,7 @@ set(COMPAT_HEADERS
     lock.h
     log.h
     status_macros.h
+    unaligned.h
 )
 openfst_install(FILES ${COMPAT_HEADERS}
                 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openfst/compat

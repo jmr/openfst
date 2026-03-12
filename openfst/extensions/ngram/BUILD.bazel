@@ -35,10 +35,10 @@ cc_library(
     hdrs = ["bitmap-index.h"],
     deps = [
         ":nthbit",
-        "//base:port",
-        "@com_google_absl//absl/base:config",
+        "//openfst/compat:unaligned",
         "@com_google_absl//absl/base:core_headers",
         "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/numeric:bits",
     ],
 )
 

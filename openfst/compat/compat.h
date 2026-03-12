@@ -62,13 +62,6 @@ inline Dest bit_cast(const Source& source) {
   return dest;
 }
 
-template <typename T>
-T UnalignedLoad(const void* p) {
-  T t;
-  std::memcpy(&t, p, sizeof t);
-  return t;
-}
-
 namespace internal {
 
 // TODO: Remove this once we migrate to C++20.

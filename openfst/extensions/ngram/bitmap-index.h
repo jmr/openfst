@@ -23,10 +23,10 @@
 #include <utility>
 #include <vector>
 
-#include "base/port.h"
-#include "absl/base/config.h"
 #include "absl/base/optimization.h"
 #include "absl/log/check.h"
+#include "absl/numeric/bits.h"
+#include "openfst/compat/unaligned.h"
 
 // This class is a bitstring storage class with an index that allows
 // seeking to the Nth set or clear bit in time O(Log(N)) (or
@@ -218,14 +218,15 @@ class BitmapIndex {
       // This load is unaligned for `k < 4` and aligned otherwise.  The
       // address is always within `RankIndexEntry`.
       uint32_t relative_ones_counts_8x4 =
-          base::UnalignedLoad<uint32_t>(&relative_ones_counts_[k >> 2][0] - 1);
-#ifdef ABSL_IS_LITTLE_ENDIAN
-      // Clear out the garbage byte.
-      relative_ones_counts_8x4 &= ~0xFF;
-      return c + ((relative_ones_counts_8x4 >> (8 * (k & 3))) & 0xFF);
-#else
-#error "Big-endian currently unsupported."
-#endif
+          fst_internal::UnalignedLoad<uint32_t>(&relative_ones_counts_[k >> 2][0] - 1);
+      if constexpr (absl::endian::native == absl::endian::little) {
+        // Clear out the garbage byte.
+        relative_ones_counts_8x4 &= ~0xFF;
+        return c + ((relative_ones_counts_8x4 >> (8 * (k & 3))) & 0xFF);
+      } else {
+        static_assert(absl::endian::native == absl::endian::little,
+                      "Big-endian currently unsupported.");
+      }
     }
 
     uint32_t relative_ones_count_1() const {

@@ -110,3 +110,18 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "unaligned",
+    hdrs = ["unaligned.h"],
+)
+
+cc_test(
+    name = "unaligned_test",
+    srcs = ["unaligned_test.cc"],
+    linkstatic = True,
+    deps = [
+        ":unaligned",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

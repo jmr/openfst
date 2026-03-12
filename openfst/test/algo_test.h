@@ -32,6 +32,7 @@
 #include "gtest/gtest.h"
 #include "absl/flags/declare.h"
 #include "absl/flags/flag.h"
+#include "absl/log/check.h"
 #include "absl/log/log.h"
 #include "openfst/lib/arc-map.h"
 #include "openfst/lib/arc.h"
@@ -1383,10 +1384,9 @@ class AlgoTester {
         new UnweightedTester<Arc>(zero_fst_, one_fst_, univ_fst_, seed));
   }
 
-  void MakeRandFst(MutableFst<Arc>* fst) {
-    RandFst<Arc, WeightGenerator>(kNumRandomStates, kNumRandomArcs,
-                                  kNumRandomLabels, kAcyclicProb, generate_,
-                                  rand_(), fst);
+  absl::Status MakeRandFst(MutableFst<Arc>* fst) {
+    return RandFst(kNumRandomStates, kNumRandomArcs, kNumRandomLabels,
+                   kAcyclicProb, generate_, rand_(), fst);
   }
 
   void Test() {
@@ -1397,9 +1397,9 @@ class AlgoTester {
       VectorFst<Arc> T1;
       VectorFst<Arc> T2;
       VectorFst<Arc> T3;
-      MakeRandFst(&T1);
-      MakeRandFst(&T2);
-      MakeRandFst(&T3);
+      CHECK_OK(MakeRandFst(&T1));
+      CHECK_OK(MakeRandFst(&T2));
+      CHECK_OK(MakeRandFst(&T3));
       weighted_tester_->Test(T1, T2, T3);
 
       VectorFst<Arc> A1(T1);

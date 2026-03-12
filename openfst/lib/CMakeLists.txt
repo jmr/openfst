@@ -28,7 +28,10 @@ add_library(
   weight.cc
 )
 
-set_target_properties(fst PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fst
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 
 target_include_directories(
   fst PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>

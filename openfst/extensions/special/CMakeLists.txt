@@ -13,7 +13,10 @@
 # limitations under the License.
 
 add_library(fstphi-fst phi-fst.cc)
-set_target_properties(fstphi-fst PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstphi-fst
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 target_include_directories(
   fstphi-fst PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
                     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -27,7 +30,10 @@ target_link_libraries(
 )
 
 add_library(fstrho-fst rho-fst.cc)
-set_target_properties(fstrho-fst PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstrho-fst
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 target_include_directories(
   fstrho-fst PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
                     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -41,7 +47,10 @@ target_link_libraries(
 )
 
 add_library(fstsigma-fst sigma-fst.cc)
-set_target_properties(fstsigma-fst PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstsigma-fst
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 target_include_directories(
   fstsigma-fst PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
                       $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>

@@ -62,8 +62,9 @@ foreach(TOOL_NAME ${BINARIES})
     # used. The macOS linker is strict and does not allow undefined symbols in
     # shared libraries by default. Below we relax this requirement.
     target_link_options(
-      ${TOOL_NAME}-main PRIVATE
-      $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:LINKER:-undefined,dynamic_lookup>
+      ${TOOL_NAME}-main
+      PRIVATE
+        $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:LINKER:-undefined,dynamic_lookup>
     )
   endif()
 

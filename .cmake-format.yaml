@@ -14,6 +14,10 @@
 
 parse:
   additional_commands:
+    set_target_properties:
+      kwargs:
+        PROPERTIES: "*"
+      max_subgroups_hwrap: 1
     set:
       kwargs:
         CACHE: 3
@@ -41,6 +45,41 @@ parse:
         PUBLIC: "+"
         PRIVATE: "+"
         INTERFACE: "+"
+    target_link_options:
+      kwargs:
+        PUBLIC: "+"
+        PRIVATE: "+"
+        INTERFACE: "+"
+    target_include_directories:
+      kwargs:
+        PUBLIC: "+"
+        PRIVATE: "+"
+        INTERFACE: "+"
+    target_compile_options:
+      kwargs:
+        PUBLIC: "+"
+        PRIVATE: "+"
+        INTERFACE: "+"
+    target_compile_definitions:
+      kwargs:
+        PUBLIC: "+"
+        PRIVATE: "+"
+        INTERFACE: "+"
+    target_compile_features:
+      kwargs:
+        PUBLIC: "+"
+        PRIVATE: "+"
+        INTERFACE: "+"
+    target_link_directories:
+      kwargs:
+        PUBLIC: "+"
+        PRIVATE: "+"
+        INTERFACE: "+"
+    target_sources:
+      kwargs:
+        PUBLIC: "+"
+        PRIVATE: "+"
+        INTERFACE: "+"
 
 format:
   line_width: 80
@@ -64,5 +103,26 @@ misc:
     add_executable:
       pargs_hwrap: 0
     target_link_libraries:
+      pargs_hwrap: 0
+      max_subgroups_hwrap: 0
+    target_link_options:
+      pargs_hwrap: 0
+      max_subgroups_hwrap: 0
+    target_include_directories:
+      pargs_hwrap: 0
+      max_subgroups_hwrap: 0
+    target_compile_options:
+      pargs_hwrap: 0
+      max_subgroups_hwrap: 0
+    target_compile_definitions:
+      pargs_hwrap: 0
+      max_subgroups_hwrap: 0
+    target_compile_features:
+      pargs_hwrap: 0
+      max_subgroups_hwrap: 0
+    target_link_directories:
+      pargs_hwrap: 0
+      max_subgroups_hwrap: 0
+    target_sources:
       pargs_hwrap: 0
       max_subgroups_hwrap: 0

@@ -32,8 +32,9 @@ target_link_libraries(
 )
 
 add_library(fstcompressscript compressscript.cc)
-set_target_properties(fstcompressscript PROPERTIES SOVERSION
-                                                   ${OPENFST_SOVERSION}
+set_target_properties(
+  fstcompressscript
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
 )
 
 target_include_directories(
@@ -61,8 +62,9 @@ target_link_libraries(
 )
 
 add_library(fstquantize_weights quantize_weights.cc)
-set_target_properties(fstquantize_weights PROPERTIES SOVERSION
-                                                     ${OPENFST_SOVERSION}
+set_target_properties(
+  fstquantize_weights
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
 )
 
 target_include_directories(

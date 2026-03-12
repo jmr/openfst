@@ -13,7 +13,10 @@
 # limitations under the License.
 
 add_library(fstpdtscript getters.cc pdtscript.cc)
-set_target_properties(fstpdtscript PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstpdtscript
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 
 target_include_directories(
   fstpdtscript PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>

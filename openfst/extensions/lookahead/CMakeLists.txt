@@ -20,7 +20,10 @@ set(LOOKAHEAD_LIBS
 
 foreach(LIB ${LOOKAHEAD_LIBS})
   add_library(${LIB} ${LIB}.cc)
-  set_target_properties(${LIB} PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+  set_target_properties(
+    ${LIB}
+    PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+  )
   target_include_directories(
     ${LIB} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>

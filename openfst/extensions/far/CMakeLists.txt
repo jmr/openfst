@@ -19,7 +19,10 @@ add_library(
   far.cc
   getters.cc
 )
-set_target_properties(fstfar PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstfar
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 
 target_include_directories(
   fstfar PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
@@ -45,7 +48,10 @@ add_library(
   farscript.cc
   script-impl.cc
 )
-set_target_properties(fstfarscript PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstfarscript
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 
 target_include_directories(
   fstfarscript PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>

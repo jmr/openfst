@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set(CATEGORIAL_HEADERS
-    categorial-weight.h
-)
+set(CATEGORIAL_HEADERS categorial-weight.h)
 
 openfst_install(
   FILES ${CATEGORIAL_HEADERS}

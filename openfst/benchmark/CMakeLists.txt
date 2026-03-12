@@ -32,18 +32,21 @@ set(BENCHMARKS
 )
 
 foreach(BENCHMARK_SRC ${BENCHMARKS})
-  # CMake target names must be globally unique across the entire project.
-  # Since many benchmarks share filenames with the tests in openfst/test
-  # (e.g., compact_test.cc), we append a suffix to the target name.
+  # CMake target names must be globally unique across the entire project. Since
+  # many benchmarks share filenames with the tests in openfst/test (e.g.,
+  # compact_test.cc), we append a suffix to the target name.
   set(BENCHMARK_TARGET "${BENCHMARK_SRC}_benchmark")
   add_executable(${BENCHMARK_TARGET} ${BENCHMARK_SRC}.cc benchmain_main.cc)
 
-  # Set the output filename to match the source name (e.g., 'compact_test')
-  # so the binary on disk does not have the suffix.
-  set_target_properties(${BENCHMARK_TARGET} PROPERTIES OUTPUT_NAME ${BENCHMARK_SRC})
+  # Set the output filename to match the source name (e.g., 'compact_test') so
+  # the binary on disk does not have the suffix.
+  set_target_properties(
+    ${BENCHMARK_TARGET}
+    PROPERTIES OUTPUT_NAME ${BENCHMARK_SRC}
+  )
 
-  target_include_directories(
-    ${BENCHMARK_TARGET} PRIVATE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+  target_include_directories(${BENCHMARK_TARGET}
+                             PRIVATE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
   )
 
   target_link_libraries(
@@ -65,8 +68,13 @@ foreach(BENCHMARK_SRC ${BENCHMARKS})
     if(OPENFST_ENABLE_NGRAM_FSTS)
       target_link_libraries(${BENCHMARK_TARGET} PRIVATE fstngram)
     else()
-      message(STATUS "NGram FSTs disabled, skipping benchmark ${BENCHMARK_TARGET}")
-      set_target_properties(${BENCHMARK_TARGET} PROPERTIES EXCLUDE_FROM_ALL TRUE)
+      message(
+        STATUS "NGram FSTs disabled, skipping benchmark ${BENCHMARK_TARGET}"
+      )
+      set_target_properties(
+        ${BENCHMARK_TARGET}
+        PROPERTIES EXCLUDE_FROM_ALL TRUE
+      )
     endif()
   endif()
 endforeach()

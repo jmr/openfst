@@ -13,7 +13,10 @@
 # limitations under the License.
 
 add_library(fstngram bitmap-index.cc ngram-fst.cc nthbit.cc)
-set_target_properties(fstngram PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstngram
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 
 target_include_directories(
   fstngram PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>

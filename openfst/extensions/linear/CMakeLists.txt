@@ -13,7 +13,10 @@
 # limitations under the License.
 
 add_library(fstlinearscript linearscript.cc)
-set_target_properties(fstlinearscript PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstlinearscript
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 
 target_include_directories(
   fstlinearscript PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
@@ -28,14 +31,16 @@ target_link_libraries(
 )
 
 add_library(fstlinear_tagger_fst linear-tagger-fst.cc)
-set_target_properties(fstlinear_tagger_fst PROPERTIES SOVERSION
-                                                      ${OPENFST_SOVERSION}
+set_target_properties(
+  fstlinear_tagger_fst
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
 )
 target_link_libraries(fstlinear_tagger_fst PUBLIC fst)
 
 add_library(fstlinear_classifier_fst linear-classifier-fst.cc)
-set_target_properties(fstlinear_classifier_fst PROPERTIES SOVERSION
-                                                          ${OPENFST_SOVERSION}
+set_target_properties(
+  fstlinear_classifier_fst
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
 )
 target_link_libraries(fstlinear_classifier_fst PUBLIC fst)
 

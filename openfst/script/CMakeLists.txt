@@ -63,7 +63,10 @@ add_library(
   weight-class.cc
 )
 
-set_target_properties(fstscript PROPERTIES SOVERSION ${OPENFST_SOVERSION})
+set_target_properties(
+  fstscript
+  PROPERTIES SOVERSION ${OPENFST_SOVERSION}
+)
 
 target_include_directories(
   fstscript PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>

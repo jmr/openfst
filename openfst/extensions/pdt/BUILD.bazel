@@ -63,14 +63,10 @@ cc_library(
         ":expand",
         ":info",
         ":replace",
-        ":reverse",
         ":shortest-path",
-        "//base",
         "//openfst/lib",
         "//openfst/lib:util",
-        "//openfst/lib:weight",
         "//openfst/script",
-        "//openfst/script:fstscript",
         "@com_google_absl//absl/strings",
     ],
 )
@@ -80,14 +76,10 @@ cc_library(
     hdrs = ["paren.h"],
     deps = [
         ":collection",
-        ":pdt",
-        "//base",
-        "//openfst/compat:compat_memory",
         "//openfst/lib",
         "//openfst/lib:util",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/container:flat_hash_set",
-        "@com_google_absl//absl/memory",
     ],
 )
 
@@ -95,7 +87,6 @@ cc_library(
     name = "pdt",
     hdrs = ["pdt.h"],
     deps = [
-        "//base",
         "//openfst/lib",
         "@com_google_absl//absl/container:flat_hash_map",
     ],
@@ -106,7 +97,6 @@ cc_library(
     hdrs = ["compose.h"],
     deps = [
         ":pdt",
-        "//base",
         "//openfst/lib",
         "//openfst/lib:util",
     ],
@@ -117,7 +107,6 @@ cc_library(
     hdrs = ["shortest-path.h"],
     deps = [
         ":paren",
-        ":pdt",
         "//openfst/lib",
         "//openfst/lib:util",
         "//openfst/lib:weight",
@@ -134,7 +123,6 @@ cc_library(
         "//openfst/lib:symbol-table",
         "//openfst/lib:util",
         "@com_google_absl//absl/container:flat_hash_map",
-        "@com_google_absl//absl/log",
         "@com_google_absl//absl/types:span",
     ],
 )
@@ -153,12 +141,10 @@ cc_library(
         ":pdt",
         ":reverse",
         ":shortest-path",
-        "//openfst/compat:compat_memory",
         "//openfst/lib",
         "//openfst/lib:util",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/log",
-        "@com_google_absl//absl/memory",
         "@com_google_absl//absl/types:span",
     ],
 )
@@ -167,7 +153,6 @@ cc_library(
     name = "info",
     hdrs = ["info.h"],
     deps = [
-        ":pdt",
         "//openfst/lib",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/container:flat_hash_set",
@@ -196,10 +181,11 @@ cc_library(
     deps = [
         ":compose",
         ":script",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:util",
         "//openfst/script",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:flags",
     ],
@@ -210,11 +196,12 @@ cc_library(
     srcs = ["pdtexpand-main.cc"],
     deps = [
         ":script",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:util",
         "//openfst/script",
         "//openfst/script:weight-class",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:flags",
     ],
@@ -225,10 +212,11 @@ cc_library(
     srcs = ["pdtinfo-main.cc"],
     deps = [
         ":script",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:util",
         "//openfst/script",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:flags",
     ],
@@ -240,10 +228,11 @@ cc_library(
     deps = [
         ":replace",
         ":script",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:util",
         "//openfst/script",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:flags",
         "@com_google_absl//absl/strings",
@@ -255,10 +244,11 @@ cc_library(
     srcs = ["pdtreverse-main.cc"],
     deps = [
         ":script",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:util",
         "//openfst/script",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:flags",
     ],
@@ -269,11 +259,12 @@ cc_library(
     srcs = ["pdtshortestpath-main.cc"],
     deps = [
         ":script",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:lib_lite",
         "//openfst/lib:util",
         "//openfst/script",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:flags",
     ],
@@ -369,7 +360,6 @@ cc_test(
         "//openfst/compat:file_path",
         "//openfst/lib",
         "//openfst/lib:util",
-        "//openfst/lib:weight",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -406,7 +396,6 @@ cc_test(
         "//openfst/compat:file_path",
         "//openfst/lib",
         "//openfst/lib:util",
-        "//openfst/lib:weight",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -440,7 +429,6 @@ cc_test(
         "//openfst/compat:file_path",
         "//openfst/lib",
         "//openfst/lib:util",
-        "//openfst/lib:weight",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -470,7 +458,6 @@ cc_test(
         "//openfst/compat:file_path",
         "//openfst/lib",
         "//openfst/lib:util",
-        "//openfst/lib:weight",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -507,7 +494,6 @@ cc_test(
         "//openfst/compat:file_path",
         "//openfst/lib",
         "//openfst/lib:util",
-        "//openfst/lib:weight",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -543,7 +529,6 @@ cc_test(
         "//openfst/compat:file_path",
         "//openfst/lib",
         "//openfst/lib:util",
-        "//openfst/lib:weight",
         "@com_google_googletest//:gtest_main",
     ],
 )

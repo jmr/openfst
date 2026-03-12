@@ -26,10 +26,7 @@ cc_library(
     name = "nthbit",
     srcs = ["nthbit.cc"],
     hdrs = ["nthbit.h"],
-    deps = [
-        "@com_google_absl//absl/base:core_headers",
-        "@com_google_absl//absl/log:check",
-    ],
+    deps = ["@com_google_absl//absl/log:check"],
 )
 
 cc_library(
@@ -38,7 +35,6 @@ cc_library(
     hdrs = ["bitmap-index.h"],
     deps = [
         ":nthbit",
-        "//base",
         "//base:port",
         "@com_google_absl//absl/base:config",
         "@com_google_absl//absl/base:core_headers",
@@ -60,12 +56,10 @@ cc_library(
     hdrs = ["ngram-fst.h"],
     deps = [
         ":bitmap-index",
-        "//openfst/compat:compat_memory",
         "//openfst/lib:file-util",
         "//openfst/lib:lib_lite",
         "//openfst/lib:util",
         "@com_google_absl//absl/log",
-        "@com_google_absl//absl/memory",
     ],
 )
 
@@ -76,7 +70,6 @@ cc_library(
         ":ngram-fst",
         "//openfst/lib:lib_lite",
         "//openfst/lib:register",
-        "//openfst/lib:weight",
     ],
     alwayslink = 1,
 )
@@ -86,7 +79,6 @@ cc_library(
     hdrs = ["louds-tree.h"],
     deps = [
         ":bitmap-index",
-        "//base",
         "//openfst/compat:compat_memory",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/types:span",
@@ -100,7 +92,6 @@ cc_test(
     linkstatic = True,
     deps = [
         ":ngram-fst",
-        "//base",
         "//openfst/compat:file_path",
         "//openfst/lib",
         "//openfst/lib:file-util",
@@ -136,7 +127,6 @@ cc_test(
     linkstatic = True,
     deps = [
         ":bitmap-index",
-        "//base",
         "//openfst/compat:compat_memory",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/log:check",
@@ -184,7 +174,6 @@ cc_test(
     linkstatic = True,
     deps = [
         ":nthbit",
-        "//base",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:check",

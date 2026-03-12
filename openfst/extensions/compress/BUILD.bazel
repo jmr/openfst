@@ -31,12 +31,10 @@ fst_cc_library(
     hdrs = ["compress.h"],
     deps = [
         ":elias",
-        "//openfst/compat:compat_memory",
         "//openfst/lib",
         "//openfst/lib:file-util",
         "//openfst/lib:util",
         "@com_google_absl//absl/log",
-        "@com_google_absl//absl/memory",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/types:span",
     ],
@@ -55,7 +53,6 @@ cc_library(
     deps = [
         ":compress",
         "//openfst/lib",
-        "//openfst/lib:weight",
         "//openfst/script",
     ],
 )
@@ -65,10 +62,11 @@ cc_library(
     srcs = ["fstcompress-main.cc"],
     deps = [
         ":script",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:util",
         "//openfst/script",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log:flags",
     ],
 )
@@ -89,11 +87,12 @@ cc_binary(
     linkstatic = True,
     deps = [
         ":randmod",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib",
         "//openfst/lib:fst-decl",
         "//openfst/lib:weight",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log:flags",
     ],
 )
@@ -110,8 +109,8 @@ cc_test(
     linkstatic = True,
     deps = [
         ":compress",
-        "//base",
         "//openfst/compat:file_path",
+        "//openfst/compat:init",
         "//openfst/lib",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/log:flags",
@@ -128,16 +127,14 @@ cc_test(
     deps = [
         ":compress",
         ":randmod",
-        "//base",
-        "//openfst/compat:compat_memory",
         "//openfst/compat:file_path",
+        "//openfst/compat:init",
         "//openfst/lib",
         "//openfst/lib:fst-decl",
         "//openfst/lib:weight",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:flags",
-        "@com_google_absl//absl/memory",
         "@com_google_googletest//:gtest",
     ],
 )
@@ -174,9 +171,10 @@ cc_binary(
     linkstatic = True,
     deps = [
         "quantize_weights",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:usage",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:flags",
     ],
@@ -196,11 +194,9 @@ cc_test(
     linkstatic = True,
     deps = [
         ":quantize_weights",
-        "//base",
         "//openfst/compat:file_path",
+        "//openfst/compat:init",
         "//openfst/lib",
-        "//openfst/lib:util",
-        "//openfst/lib:weight",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/log:flags",
         "@com_google_googletest//:gtest",

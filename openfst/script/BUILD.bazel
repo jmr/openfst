@@ -21,13 +21,11 @@ fst_cc_library(
     srcs = ["weight-class.cc"],
     hdrs = ["weight-class.h"],
     deps = [
-        "//openfst/compat:compat_memory",
         "//openfst/lib",
         "//openfst/lib:register",
         "//openfst/lib:util",
         "//openfst/lib:weight",
         "@com_google_absl//absl/base",
-        "@com_google_absl//absl/memory",
         "@com_google_absl//absl/strings",
     ],
 )
@@ -202,7 +200,6 @@ fst_cc_library(
     hdrs = ["info-impl.h"],
     deps = [
         ":arcfilter-impl",
-        "//base",
         "//openfst/lib",
         "//openfst/lib:util",
         "@com_google_absl//absl/strings",

@@ -214,7 +214,6 @@ cc_library(
     deps = [
         "//openfst/lib:weight",
         "@com_google_absl//absl/log",
-        "@com_google_absl//absl/log:check",
         "@com_google_googletest//:gtest",
     ],
 )
@@ -974,7 +973,7 @@ cc_test(
     data = [],
     linkstatic = True,
     deps = [
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib",
         "//openfst/lib:symbol-table",
         "//openfst/lib:util",
@@ -1072,7 +1071,6 @@ cc_test(
     linkstatic = True,
     deps = [
         ":my_register",
-        "//openfst/lib",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -1144,7 +1142,6 @@ cc_test(
     srcs = ["interval-set_test.cc"],
     linkstatic = True,
     deps = [
-        "//base",
         "//openfst/lib:interval-set",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/log",
@@ -2102,7 +2099,7 @@ cc_test(
     srcs = ["union-find_test.cc"],
     linkstatic = True,
     deps = [
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:union-find",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/log:flags",
@@ -2209,7 +2206,7 @@ cc_test(
     deps = [
         ":compactors",
         ":fst_test-hdr",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/extensions/lookahead:arc_lookahead-fst",
         "//openfst/extensions/lookahead:ilabel_lookahead-fst",
         "//openfst/extensions/lookahead:olabel_lookahead-fst",
@@ -2229,7 +2226,6 @@ cc_test(
     srcs = ["script_test.cc"],
     linkstatic = True,
     deps = [
-        "//base",
         "//openfst/lib",
         "//openfst/lib:symbol-table",
         "//openfst/lib:util",
@@ -2275,7 +2271,7 @@ cc_test(
     linkstatic = True,
     deps = [
         ":weight_tester",
-        "//base",
+        "//openfst/compat:init",
         "//openfst/lib:weight",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/log:flags",
@@ -2350,7 +2346,7 @@ cc_binary(
     linkstatic = True,
     deps = [
         ":my_register",
-        "//base",
+        "//openfst/compat:init",
     ],
 )
 
@@ -2367,7 +2363,6 @@ cc_binary(
         ":basic-fst",
         "//openfst/lib:lib_lite",
         "//openfst/lib:register",
-        "//openfst/lib:weight",
     ],
 )
 

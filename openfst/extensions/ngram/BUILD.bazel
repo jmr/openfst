@@ -26,7 +26,11 @@ cc_library(
     name = "nthbit",
     srcs = ["nthbit.cc"],
     hdrs = ["nthbit.h"],
-    deps = ["@com_google_absl//absl/log:check"],
+    deps = [
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/numeric:bits",
+    ],
 )
 
 cc_library(

@@ -49,7 +49,7 @@ jobs:
           run: |
             bazelisk build --config=dev -c fastbuild //...
         - name: Test
-          run: |
+          run: >-
             bazelisk test --config=dev -c fastbuild
             --test_size_filters=-enormous --test_output=errors
             //...

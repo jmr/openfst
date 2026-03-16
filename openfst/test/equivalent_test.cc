@@ -28,6 +28,7 @@
 
 #include "openfst/compat/file_path.h"
 #include "gtest/gtest.h"
+#include "absl/base/attributes.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/flags/flag.h"
 #include "absl/memory/memory.h"
@@ -54,7 +55,13 @@ using Label = Arc::Label;
 //
 //   - ! Equivalent(fa1, fa2) for every pair (fa1, fa2) such that fa1
 //   and fa2 belong to different collections.
-static constexpr std::array fst_names{
+//
+// Portability note:
+// When using `constexpr` and initializer lists, MSVC generates empty string
+// addresses. Hence we use `const` instead of `constexpr`. For a similar issue
+// see:
+// https://stackoverflow.com/questions/74209112/constexpr-initializer-list-producing-no-output-with-msvc
+ABSL_CONST_INIT const std::array kFstNames{
     std::initializer_list<absl::string_view>{"e1", "e2", "e3"},
     std::initializer_list<absl::string_view>{"e4"},
     std::initializer_list<absl::string_view>{"e5", "e6", "e7"},
@@ -72,7 +79,7 @@ class EquivTest : public testing::Test {
     const std::string kTestPath =
         JoinPath(std::string("."),
                        "openfst/test/testdata/equivalent");
-    for (const auto& init_list : fst_names) {
+    for (const auto& init_list : kFstNames) {
       Name2FstMap fsts;
       for (absl::string_view s : init_list) {
         const std::string source =

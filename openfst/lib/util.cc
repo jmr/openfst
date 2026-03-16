@@ -86,7 +86,7 @@ void ConvertToLegalCSymbol(std::string* s) {
 bool AlignInput(std::istream& strm, size_t align) {
   char c;
   for (size_t i = 0; i < align; ++i) {
-    int64_t pos = strm.tellg();
+    const int64_t pos = strm.tellg();
     if (pos < 0) {
       LOG(ERROR) << "AlignInput: Can't determine stream position";
       return false;
@@ -101,7 +101,7 @@ bool AlignInput(std::istream& strm, size_t align) {
 // can't align.
 bool AlignOutput(std::ostream& strm, size_t align) {
   for (size_t i = 0; i < align; ++i) {
-    int64_t pos = strm.tellp();
+    const int64_t pos = strm.tellp();
     if (pos < 0) {
       LOG(ERROR) << "AlignOutput: Can't determine stream position";
       return false;

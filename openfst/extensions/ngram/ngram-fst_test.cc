@@ -18,6 +18,7 @@
 #include "openfst/extensions/ngram/ngram-fst.h"
 
 #include <cstdint>
+#include <fstream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -129,7 +130,7 @@ TEST(NGramFstTest, NGramFstAlignedIO) {
   std::string source = JoinPath(::testing::TempDir(), "loudslm.fst");
   {
     // Create in local frame so that file is closed before reading.
-    file::FileOutStream file(source);
+    file::FileOutStream file(source, std::ios_base::out | std::ios::binary);
     FstWriteOptions opts;
     opts.align = true;
     loudsfst.Write(file, opts);

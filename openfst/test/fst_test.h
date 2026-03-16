@@ -21,6 +21,7 @@
 #define OPENFST_TEST_FST_TEST_H_
 
 #include <cstddef>
+#include <fstream>
 #include <memory>
 #include <string>
 
@@ -245,13 +246,15 @@ class FstTester {
     {
       // check mmaping by first writing the file with the aligned attribute set
       {
-        file::FileOutStream ostr(aligned);
+        file::FileOutStream ostr(aligned,
+                                 std::ios_base::out | std::ios_base::binary);
         FstWriteOptions opts;
         opts.source = aligned;
         opts.align = true;
         ASSERT_TRUE(fst.Write(ostr, opts));
       }
-      file::FileInStream istr(aligned);
+      file::FileInStream istr(aligned,
+                              std::ios_base::in | std::ios_base::binary);
       FstReadOptions opts;
       opts.mode = FstReadOptions::ReadMode("map");
       opts.source = aligned;
@@ -263,13 +266,15 @@ class FstTester {
     // check mmaping of unaligned files to make sure it does not fail.
     {
       {
-        file::FileOutStream ostr(aligned);
+        file::FileOutStream ostr(aligned,
+                                 std::ios_base::out | std::ios_base::binary);
         FstWriteOptions opts;
         opts.source = aligned;
         opts.align = false;
         ASSERT_TRUE(fst.Write(ostr, opts));
       }
-      file::FileInStream istr(aligned);
+      file::FileInStream istr(aligned,
+                              std::ios_base::in | std::ios_base::binary);
       FstReadOptions opts;
       opts.mode = FstReadOptions::ReadMode("map");
       opts.source = aligned;
